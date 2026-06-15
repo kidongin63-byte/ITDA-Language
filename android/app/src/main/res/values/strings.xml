@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">잇다</string>
+
+    <!-- 온보딩 -->
+    <string name="onboarding_tagline">소리가 없어도,\n우리는 이어집니다</string>
+    <string name="onboarding_subtitle">인공지능 수어 통역 서비스 ITDA</string>
+    <string name="onboarding_start">시작하기</string>
+    <string name="onboarding_language">🌐 한국어 (KSL)</string>
+
+    <!-- 인증 -->
+    <string name="auth_app_title">잇다</string>
+    <string name="auth_subtitle">소리로 이어주는 따뜻한 다리</string>
+    <string name="auth_email">이메일</string>
+    <string name="auth_nickname">닉네임</string>
+    <string name="auth_password">비밀번호</string>
+    <string name="auth_login">로그인</string>
+    <string name="auth_register">회원가입</string>
+    <string name="auth_no_account">계정이 없으신가요? 회원가입</string>
+    <string name="auth_has_account">이미 계정이 있으신가요? 로그인</string>
+    <string name="auth_error_empty_login">이메일과 비밀번호를 입력해주세요</string>
+    <string name="auth_error_empty_register">모든 항목을 입력해주세요</string>
+
+    <!-- 홈/탭 -->
+    <string name="tab_sign_to_voice">🤟  수어→음성</string>
+    <string name="tab_text_to_speech">🔊  텍스트→음성</string>
+    <string name="status_analyzing">실시간 분석 중</string>
+    <string name="status_synthesizing">음성 합성 중</string>
+    <string name="status_playing">음성 재생 중</string>
+    <string name="btn_close">닫기</string>
+    <string name="btn_settings">설정</string>
+
+    <!-- TTS 탭 -->
+    <string name="tts_placeholder">여기에 말할 내용을 입력하세요</string>
+    <string name="tts_synthesizing">음성 합성 중…</string>
+    <string name="tts_error_default">음성 합성에 실패했습니다. 네트워크를 확인해주세요.</string>
+    <string name="tts_favorites">즐겨찾기</string>
+    <string name="tts_adjust">조절</string>
+    <string name="tts_speak">말하기</string>
+    <string name="tts_stop">중지</string>
+    <string name="tts_voice_adjust">음성 조절</string>
+    <string name="tts_speed">속도</string>
+    <string name="tts_pitch">피치</string>
+    <string name="tts_volume">볼륨</string>
+    <string name="tts_tap_change_voice">탭하여 음성 변경</string>
+
+    <!-- 수어 탭 -->
+    <string name="sign_camera_guide">카메라를 활성화하여\n수어를 인식합니다</string>
+    <string name="sign_detecting">손동작 인식중</string>
+    <string name="sign_result">번역 결과</string>
+
+    <!-- 스피커 경고 -->
+    <string name="speaker_muted">음소거 상태입니다</string>
+    <string name="speaker_low">볼륨이 낮습니다</string>
+    <string name="speaker_unavailable">스피커를 사용할 수 없습니다</string>
+    <string name="speaker_muted_desc">상대방이 들을 수 없습니다</string>
+    <string name="speaker_low_desc">상대방이 잘 듣지 못할 수 있습니다</string>
+    <string name="speaker_unavailable_desc">외부 스피커를 확인해주세요</string>
+    <string name="speaker_boost">올리기</string>
+
+    <!-- 음성 선택 -->
+    <string name="voice_select_title">음성 선택</string>
+    <string name="voice_back">뒤로</string>
+    <string name="voice_gender">성별</string>
+    <string name="voice_age">연령대</string>
+    <string name="voice_region">지역</string>
+    <string name="voice_tone">톤</string>
+    <string name="voice_all">전체</string>
+    <string name="voice_no_match">조건에 맞는 화자가 없습니다</string>
+    <string name="voice_selected">선택됨</string>
+    <string name="voice_emotion">감정표현</string>
+
+    <!-- 즐겨찾기 -->
+    <string name="phrase_title">즐겨찾기 문구</string>
+    <string name="phrase_add_preset">프리셋 추가</string>
+    <string name="phrase_add">문구 추가</string>
+    <string name="phrase_empty">저장된 문구가 없습니다</string>
+    <string name="phrase_add_preset_btn">기본 프리셋 추가하기</string>
+    <string name="phrase_play">재생</string>
+    <string name="phrase_delete">삭제</string>
+    <string name="phrase_new_title">새 문구 추가</string>
+    <string name="phrase_input_label">문구 입력</string>
+    <string name="phrase_confirm">추가</string>
+    <string name="phrase_cancel">취소</string>
+
+    <!-- 공통 버튼 -->
+    <string name="btn_confirm">확인</string>
+</resources>

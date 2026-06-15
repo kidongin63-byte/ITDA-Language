@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ITDA</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_tagline">Even without sound,\nwe stay connected</string>
+    <string name="onboarding_subtitle">AI Sign Language Interpreter — ITDA</string>
+    <string name="onboarding_start">Get Started</string>
+    <string name="onboarding_language">🌐 English</string>
+
+    <!-- Auth -->
+    <string name="auth_app_title">ITDA</string>
+    <string name="auth_subtitle">A warm bridge through voice</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_nickname">Nickname</string>
+    <string name="auth_password">Password</string>
+    <string name="auth_login">Log In</string>
+    <string name="auth_register">Sign Up</string>
+    <string name="auth_no_account">Don\'t have an account? Sign Up</string>
+    <string name="auth_has_account">Already have an account? Log In</string>
+    <string name="auth_error_empty_login">Please enter email and password</string>
+    <string name="auth_error_empty_register">Please fill in all fields</string>
+
+    <!-- Home/Tabs -->
+    <string name="tab_sign_to_voice">🤟  Sign→Voice</string>
+    <string name="tab_text_to_speech">🔊  Text→Speech</string>
+    <string name="status_analyzing">Analyzing…</string>
+    <string name="status_synthesizing">Synthesizing…</string>
+    <string name="status_playing">Playing…</string>
+    <string name="btn_close">Close</string>
+    <string name="btn_settings">Settings</string>
+
+    <!-- TTS Tab -->
+    <string name="tts_placeholder">Type what you want to say</string>
+    <string name="tts_synthesizing">Synthesizing voice…</string>
+    <string name="tts_error_default">Voice synthesis failed. Please check your network.</string>
+    <string name="tts_favorites">Favorites</string>
+    <string name="tts_adjust">Adjust</string>
+    <string name="tts_speak">Speak</string>
+    <string name="tts_stop">Stop</string>
+    <string name="tts_voice_adjust">Voice Settings</string>
+    <string name="tts_speed">Speed</string>
+    <string name="tts_pitch">Pitch</string>
+    <string name="tts_volume">Volume</string>
+    <string name="tts_tap_change_voice">Tap to change voice</string>
+
+    <!-- Sign Tab -->
+    <string name="sign_camera_guide">Activate camera\nto recognize sign language</string>
+    <string name="sign_detecting">Detecting gestures</string>
+    <string name="sign_result">Translation</string>
+
+    <!-- Speaker Warning -->
+    <string name="speaker_muted">Sound is muted</string>
+    <string name="speaker_low">Volume is low</string>
+    <string name="speaker_unavailable">Speaker unavailable</string>
+    <string name="speaker_muted_desc">The other person cannot hear you</string>
+    <string name="speaker_low_desc">The other person may not hear clearly</string>
+    <string name="speaker_unavailable_desc">Please check external speaker</string>
+    <string name="speaker_boost">Turn Up</string>
+
+    <!-- Voice Select -->
+    <string name="voice_select_title">Select Voice</string>
+    <string name="voice_back">Back</string>
+    <string name="voice_gender">Gender</string>
+    <string name="voice_age">Age</string>
+    <string name="voice_region">Region</string>
+    <string name="voice_tone">Tone</string>
+    <string name="voice_all">All</string>
+    <string name="voice_no_match">No matching voices found</string>
+    <string name="voice_selected">Selected</string>
+    <string name="voice_emotion">Expressive</string>
+
+    <!-- Phrases -->
+    <string name="phrase_title">Saved Phrases</string>
+    <string name="phrase_add_preset">Add Presets</string>
+    <string name="phrase_add">Add Phrase</string>
+    <string name="phrase_empty">No saved phrases</string>
+    <string name="phrase_add_preset_btn">Add Default Presets</string>
+    <string name="phrase_play">Play</string>
+    <string name="phrase_delete">Delete</string>
+    <string name="phrase_new_title">Add New Phrase</string>
+    <string name="phrase_input_label">Enter phrase</string>
+    <string name="phrase_confirm">Add</string>
+    <string name="phrase_cancel">Cancel</string>
+
+    <!-- Common Buttons -->
+    <string name="btn_confirm">Confirm</string>
+</resources>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ITDA</string>
+
+    <!-- オンボーディング -->
+    <string name="onboarding_tagline">音がなくても、\n私たちはつながっています</string>
+    <string name="onboarding_subtitle">AI手話通訳サービス ITDA</string>
+    <string name="onboarding_start">はじめる</string>
+    <string name="onboarding_language">🌐 日本語</string>
+
+    <!-- 認証 -->
+    <string name="auth_app_title">ITDA</string>
+    <string name="auth_subtitle">声でつなぐ温かい架け橋</string>
+    <string name="auth_email">メールアドレス</string>
+    <string name="auth_nickname">ニックネーム</string>
+    <string name="auth_password">パスワード</string>
+    <string name="auth_login">ログイン</string>
+    <string name="auth_register">新規登録</string>
+    <string name="auth_no_account">アカウントをお持ちでないですか？新規登録</string>
+    <string name="auth_has_account">すでにアカウントをお持ちですか？ログイン</string>
+    <string name="auth_error_empty_login">メールアドレスとパスワードを入力してください</string>
+    <string name="auth_error_empty_register">すべての項目を入力してください</string>
+
+    <!-- ホーム/タブ -->
+    <string name="tab_sign_to_voice">🤟  手話→音声</string>
+    <string name="tab_text_to_speech">🔊  テキスト→音声</string>
+    <string name="status_analyzing">リアルタイム分析中</string>
+    <string name="status_synthesizing">音声合成中</string>
+    <string name="status_playing">再生中</string>
+    <string name="btn_close">閉じる</string>
+    <string name="btn_settings">設定</string>
+
+    <!-- TTS -->
+    <string name="tts_placeholder">話したい内容を入力してください</string>
+    <string name="tts_synthesizing">音声合成中…</string>
+    <string name="tts_error_default">音声合成に失敗しました。ネットワークを確認してください。</string>
+    <string name="tts_favorites">お気に入り</string>
+    <string name="tts_adjust">調整</string>
+    <string name="tts_speak">話す</string>
+    <string name="tts_stop">停止</string>
+    <string name="tts_voice_adjust">音声調整</string>
+    <string name="tts_speed">速度</string>
+    <string name="tts_pitch">ピッチ</string>
+    <string name="tts_volume">音量</string>
+    <string name="tts_tap_change_voice">タップして音声を変更</string>
+
+    <!-- 手話 -->
+    <string name="sign_camera_guide">カメラを起動して\n手話を認識します</string>
+    <string name="sign_detecting">ジェスチャー認識中</string>
+    <string name="sign_result">翻訳結果</string>
+
+    <!-- スピーカー警告 -->
+    <string name="speaker_muted">ミュート中です</string>
+    <string name="speaker_low">音量が低いです</string>
+    <string name="speaker_unavailable">スピーカーが使用できません</string>
+    <string name="speaker_muted_desc">相手に聞こえません</string>
+    <string name="speaker_low_desc">相手に聞こえにくい可能性があります</string>
+    <string name="speaker_unavailable_desc">外部スピーカーを確認してください</string>
+    <string name="speaker_boost">上げる</string>
+
+    <!-- 音声選択 -->
+    <string name="voice_select_title">音声を選択</string>
+    <string name="voice_back">戻る</string>
+    <string name="voice_gender">性別</string>
+    <string name="voice_age">年齢層</string>
+    <string name="voice_region">地域</string>
+    <string name="voice_tone">トーン</string>
+    <string name="voice_all">すべて</string>
+    <string name="voice_no_match">条件に合う音声がありません</string>
+    <string name="voice_selected">選択中</string>
+    <string name="voice_emotion">感情表現</string>
+
+    <!-- フレーズ -->
+    <string name="phrase_title">お気に入りフレーズ</string>
+    <string name="phrase_add_preset">プリセット追加</string>
+    <string name="phrase_add">フレーズ追加</string>
+    <string name="phrase_empty">保存されたフレーズがありません</string>
+    <string name="phrase_add_preset_btn">デフォルトプリセットを追加</string>
+    <string name="phrase_play">再生</string>
+    <string name="phrase_delete">削除</string>
+    <string name="phrase_new_title">新しいフレーズを追加</string>
+    <string name="phrase_input_label">フレーズを入力</string>
+    <string name="phrase_confirm">追加</string>
+    <string name="phrase_cancel">キャンセル</string>
+
+    <!-- 共通ボタン -->
+    <string name="btn_confirm">確認</string>
+</resources>

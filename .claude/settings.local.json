@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install:*)",
+      "Bash(pip --version)",
+      "Bash(py -3.11 --version)",
+      "Bash(py -3.11 -m pip --version)",
+      "Bash(grep -E \"\\\\.\\(txt|ini|yml|yaml|dockerfile\\)$|Dockerfile\")",
+      "Bash(python -m pip --version)",
+      "Bash(\"/c/Program Files/Android/Android Studio/jbr/bin/java.exe\" -version)",
+      "Bash(./gradlew --stop)",
+      "Bash(adb devices:*)",
+      "Bash(\"/c/Users/ComHolic/AppData/Local/Android/Sdk/platform-tools/adb.exe\" devices:*)",
+      "Bash(\"/c/Users/ComHolic/AppData/Local/Android/Sdk/emulator/emulator.exe\" -list-avds)",
+      "Bash(\"/c/Users/ComHolic/AppData/Local/Android/Sdk/emulator/emulator.exe\" -avd Medium_Phone_API_36.1 -no-snapshot-load)",
+      "Bash(/c/Users/ComHolic/AppData/Local/Android/Sdk/platform-tools/adb.exe install:*)",
+      "Bash(/c/Users/ComHolic/AppData/Local/Android/Sdk/platform-tools/adb.exe wait-for-device:*)",
+      "Bash(/c/Users/ComHolic/AppData/Local/Android/Sdk/platform-tools/adb.exe shell:*)",
+      "Bash(/c/Users/ComHolic/AppData/Local/Android/Sdk/platform-tools/adb.exe logcat:*)",
+      "Bash(/c/Users/ComHolic/AppData/Local/Programs/Python/Python314/python.exe -c ':*)",
+      "Bash(/c/Users/ComHolic/AppData/Local/Android/Sdk/platform-tools/adb.exe exec-out:*)",
+      "Bash(ls -lt \"c:/Users/ComHolic/Desktop/\"*.png \"c:/Users/ComHolic/Desktop/\"*.jpg \"c:/Users/ComHolic/Desktop/\"*.jpeg)",
+      "Bash(ls -lt \"c:/Users/ComHolic/Downloads/\"*.png \"c:/Users/ComHolic/Downloads/\"*.jpg)",
+      "Bash(/c/Users/ComHolic/AppData/Local/Android/Sdk/platform-tools/adb.exe devices:*)"
+    ],
+    "additionalDirectories": [
+      "\\tmp",
+      "c:\\Users\\ComHolic\\Desktop"
+    ]
+  }
+}

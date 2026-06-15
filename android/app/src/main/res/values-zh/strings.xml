@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ITDA</string>
+
+    <!-- 引导页 -->
+    <string name="onboarding_tagline">即使没有声音，\n我们依然相连</string>
+    <string name="onboarding_subtitle">AI手语翻译服务 ITDA</string>
+    <string name="onboarding_start">开始使用</string>
+    <string name="onboarding_language">🌐 中文</string>
+
+    <!-- 认证 -->
+    <string name="auth_app_title">ITDA</string>
+    <string name="auth_subtitle">用声音搭建温暖的桥梁</string>
+    <string name="auth_email">邮箱</string>
+    <string name="auth_nickname">昵称</string>
+    <string name="auth_password">密码</string>
+    <string name="auth_login">登录</string>
+    <string name="auth_register">注册</string>
+    <string name="auth_no_account">没有账号？注册</string>
+    <string name="auth_has_account">已有账号？登录</string>
+    <string name="auth_error_empty_login">请输入邮箱和密码</string>
+    <string name="auth_error_empty_register">请填写所有项目</string>
+
+    <!-- 首页/标签 -->
+    <string name="tab_sign_to_voice">🤟  手语→语音</string>
+    <string name="tab_text_to_speech">🔊  文字→语音</string>
+    <string name="status_analyzing">实时分析中</string>
+    <string name="status_synthesizing">语音合成中</string>
+    <string name="status_playing">播放中</string>
+    <string name="btn_close">关闭</string>
+    <string name="btn_settings">设置</string>
+
+    <!-- TTS -->
+    <string name="tts_placeholder">请输入要说的内容</string>
+    <string name="tts_synthesizing">语音合成中…</string>
+    <string name="tts_error_default">语音合成失败，请检查网络。</string>
+    <string name="tts_favorites">收藏</string>
+    <string name="tts_adjust">调节</string>
+    <string name="tts_speak">说话</string>
+    <string name="tts_stop">停止</string>
+    <string name="tts_voice_adjust">语音调节</string>
+    <string name="tts_speed">速度</string>
+    <string name="tts_pitch">音调</string>
+    <string name="tts_volume">音量</string>
+    <string name="tts_tap_change_voice">点击更换声音</string>
+
+    <!-- 手语 -->
+    <string name="sign_camera_guide">启动摄像头\n识别手语</string>
+    <string name="sign_detecting">手势识别中</string>
+    <string name="sign_result">翻译结果</string>
+
+    <!-- 扬声器警告 -->
+    <string name="speaker_muted">已静音</string>
+    <string name="speaker_low">音量较低</string>
+    <string name="speaker_unavailable">扬声器不可用</string>
+    <string name="speaker_muted_desc">对方无法听到</string>
+    <string name="speaker_low_desc">对方可能听不清</string>
+    <string name="speaker_unavailable_desc">请检查外部扬声器</string>
+    <string name="speaker_boost">调高</string>
+
+    <!-- 声音选择 -->
+    <string name="voice_select_title">选择声音</string>
+    <string name="voice_back">返回</string>
+    <string name="voice_gender">性别</string>
+    <string name="voice_age">年龄段</string>
+    <string name="voice_region">地区</string>
+    <string name="voice_tone">语调</string>
+    <string name="voice_all">全部</string>
+    <string name="voice_no_match">没有符合条件的声音</string>
+    <string name="voice_selected">已选择</string>
+    <string name="voice_emotion">情感表达</string>
+
+    <!-- 常用语 -->
+    <string name="phrase_title">收藏短语</string>
+    <string name="phrase_add_preset">添加预设</string>
+    <string name="phrase_add">添加短语</string>
+    <string name="phrase_empty">没有保存的短语</string>
+    <string name="phrase_add_preset_btn">添加默认预设</string>
+    <string name="phrase_play">播放</string>
+    <string name="phrase_delete">删除</string>
+    <string name="phrase_new_title">添加新短语</string>
+    <string name="phrase_input_label">输入短语</string>
+    <string name="phrase_confirm">添加</string>
+    <string name="phrase_cancel">取消</string>
+
+    <!-- 通用按钮 -->
+    <string name="btn_confirm">确认</string>
+</resources>
