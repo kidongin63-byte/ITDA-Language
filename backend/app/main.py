@@ -10,11 +10,9 @@ from app.core.database import engine, Base
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: 테이블 생성 (개발용, 프로덕션에서는 Alembic 사용)
-    settings = get_settings()
-    if settings.DEBUG:
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
+    # Startup: 테이블 자동 생성
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     yield
     # Shutdown
     await engine.dispose()
