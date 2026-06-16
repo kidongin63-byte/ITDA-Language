@@ -3,7 +3,7 @@ pytest 공통 fixtures
 
 - 인메모리 SQLite async DB로 격리된 테스트 환경 제공
 - FastAPI TestClient (httpx AsyncClient)
-- Redis mock (fakeredis)
+- Cache mock
 - 인증된 사용자 + 토큰 fixture
 """
 
@@ -45,10 +45,10 @@ async def db_session():
     await engine.dispose()
 
 
-# ─── Redis mock ───────────────────────────────────
+# ─── Cache mock ───────────────────────────────────
 
 @pytest_asyncio.fixture(autouse=True)
-async def mock_redis(monkeypatch):
+async def mock_cache(monkeypatch):
     """모든 테스트에서 Redis를 무시 (캐시 비활성화)"""
 
     async def _noop_get(_key):
