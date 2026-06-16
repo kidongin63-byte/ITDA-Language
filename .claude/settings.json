@@ -53,7 +53,8 @@
       "Bash(.venv/Scripts/python.exe -c \"from app.api.v1 import admin; print\\('OK'\\)\")",
       "Bash(taskkill //F //IM python.exe)",
       "Bash(\"/c/Users/ComHolic/AppData/Local/Android/Sdk/emulator/emulator.exe\" -avd Medium_Phone_API_36.1)",
-      "Bash(disown)"
+      "Bash(disown)",
+      "Bash(curl -s https://itda-language.onrender.com/health)"
     ],
     "additionalDirectories": [
       "c:\\Users\\ComHolic\\Desktop\\ITDA_Language,py\\assets\\icons",
