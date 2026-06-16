@@ -51,7 +51,9 @@
       "Bash(taskkill //F //PID 5540)",
       "Bash(curl -s http://localhost:8000/openapi.json)",
       "Bash(.venv/Scripts/python.exe -c \"from app.api.v1 import admin; print\\('OK'\\)\")",
-      "Bash(taskkill //F //IM python.exe)"
+      "Bash(taskkill //F //IM python.exe)",
+      "Bash(\"/c/Users/ComHolic/AppData/Local/Android/Sdk/emulator/emulator.exe\" -avd Medium_Phone_API_36.1)",
+      "Bash(disown)"
     ],
     "additionalDirectories": [
       "c:\\Users\\ComHolic\\Desktop\\ITDA_Language,py\\assets\\icons",

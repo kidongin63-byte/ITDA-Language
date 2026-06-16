@@ -8,11 +8,8 @@ class Settings(BaseSettings):
     APP_VERSION: str = "0.1.0"
     DEBUG: bool = False
 
-    # Database
-    DATABASE_URL: str = "postgresql+asyncpg://itda:itda@localhost:5432/itda_language"
-
-    # Redis
-    REDIS_URL: str = "redis://localhost:6379/0"
+    # Database (SQLite by default)
+    DATABASE_URL: str = "sqlite+aiosqlite:///./itda_dev.db"
 
     # JWT Auth
     JWT_SECRET_KEY: str = "change-me-in-production"
@@ -24,16 +21,6 @@ class Settings(BaseSettings):
     CLOVA_API_URL: str = "https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts"
     CLOVA_CLIENT_ID: str = ""
     CLOVA_CLIENT_SECRET: str = ""
-
-    # Object Storage (S3 호환)
-    S3_ENDPOINT_URL: str = ""
-    S3_ACCESS_KEY: str = ""
-    S3_SECRET_KEY: str = ""
-    S3_BUCKET_NAME: str = "itda-voices"
-
-    # Celery
-    CELERY_BROKER_URL: str = "redis://localhost:6379/1"
-    CELERY_RESULT_BACKEND: str = "redis://localhost:6379/2"
 
     # TTS Engine: "edge" (무료, 기본) 또는 "clova" (유료, 고도화 시)
     TTS_ENGINE: str = "edge"
