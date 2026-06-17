@@ -2,9 +2,10 @@
 fastapi
 uvicorn[standard]
 
-# Database (SQLite)
+# Database
 sqlalchemy[asyncio]
 aiosqlite
+asyncpg
 
 # HTTP Client
 httpx

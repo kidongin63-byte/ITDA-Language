@@ -13,11 +13,15 @@ class Settings(BaseSettings):
 
     @property
     def effective_database_url(self) -> str:
-        """Render 환경에서는 /tmp에 DB 저장"""
+        """Render 환경에서는 PostgreSQL, 로컬은 SQLite"""
         import os
-        if os.environ.get("RENDER"):
-            return "sqlite+aiosqlite:////tmp/itda.db"
-        return self.DATABASE_URL
+        # Render PostgreSQL (환경변수 DATABASE_URL이 postgres://로 시작)
+        db_url = os.environ.get("DATABASE_URL", self.DATABASE_URL)
+        if db_url.startswith("postgres://"):
+            db_url = db_url.replace("postgres://", "postgresql+asyncpg://", 1)
+        elif db_url.startswith("postgresql://"):
+            db_url = db_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return db_url
 
     # JWT Auth
     JWT_SECRET_KEY: str = "change-me-in-production"
