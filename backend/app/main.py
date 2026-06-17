@@ -27,7 +27,7 @@ settings = get_settings()
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    description="농인을 위한 텍스트→음성 변환 서비스",
+    description="소리로 이어주는 따뜻한 다리",
     lifespan=lifespan,
 )
 
