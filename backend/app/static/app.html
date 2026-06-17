@@ -276,13 +276,15 @@
         }
         .audio-bar audio { flex: 1; width: 100%; height: 36px; }
 
-        /* 재생 상태 표시 (농인 접근성) */
+        /* ─── 농인 접근성: 재생 상태 피드백 ─── */
+
+        /* 재생 상태 배너 */
         .play-status {
             margin-top: 12px;
             padding: 16px;
             border-radius: 12px;
             text-align: center;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             transition: all 0.3s;
         }
@@ -301,31 +303,66 @@
         }
         @keyframes pulse {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+            50% { opacity: 0.5; }
         }
+
+        /* 이퀄라이저 바 */
         .eq-bars {
             display: inline-flex;
-            gap: 3px;
-            height: 20px;
+            gap: 4px;
+            height: 24px;
             align-items: flex-end;
             vertical-align: middle;
             margin-right: 8px;
         }
         .eq-bars span {
             display: inline-block;
-            width: 4px;
+            width: 5px;
             background: #FFF;
             border-radius: 2px;
             animation: eqBounce 0.8s ease-in-out infinite;
         }
-        .eq-bars span:nth-child(1) { animation-delay: 0s; height: 8px; }
-        .eq-bars span:nth-child(2) { animation-delay: 0.15s; height: 14px; }
-        .eq-bars span:nth-child(3) { animation-delay: 0.3s; height: 10px; }
-        .eq-bars span:nth-child(4) { animation-delay: 0.45s; height: 16px; }
-        .eq-bars span:nth-child(5) { animation-delay: 0.1s; height: 12px; }
+        .eq-bars span:nth-child(1) { animation-delay: 0s; height: 10px; }
+        .eq-bars span:nth-child(2) { animation-delay: 0.15s; height: 18px; }
+        .eq-bars span:nth-child(3) { animation-delay: 0.3s; height: 12px; }
+        .eq-bars span:nth-child(4) { animation-delay: 0.45s; height: 20px; }
+        .eq-bars span:nth-child(5) { animation-delay: 0.1s; height: 14px; }
+        .eq-bars span:nth-child(6) { animation-delay: 0.25s; height: 16px; }
+        .eq-bars span:nth-child(7) { animation-delay: 0.4s; height: 10px; }
         @keyframes eqBounce {
-            0%, 100% { transform: scaleY(0.4); }
+            0%, 100% { transform: scaleY(0.3); }
             50% { transform: scaleY(1); }
+        }
+
+        /* 화면 전체 테두리 깜빡임 (재생 중) */
+        .screen-border-flash {
+            position: fixed;
+            inset: 0;
+            border: 5px solid #E76F51;
+            border-radius: 0;
+            pointer-events: none;
+            z-index: 9999;
+            animation: borderPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes borderPulse {
+            0%, 100% { border-color: #E76F51; opacity: 1; }
+            50% { border-color: #FFB4A2; opacity: 0.4; }
+        }
+
+        /* 재생 프로그레스 바 */
+        .play-progress {
+            width: 100%;
+            height: 6px;
+            background: #EAD6D1;
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .play-progress-bar {
+            height: 100%;
+            background: #E76F51;
+            border-radius: 3px;
+            transition: width 0.3s linear;
         }
 
         /* iOS safe area */
@@ -684,22 +721,60 @@ async function synthesize() {
             player.src = url;
             document.getElementById('audioBar').classList.remove('hidden');
 
-            // 재생 시작 시각 피드백
+            // ─── 농인 접근성 피드백 ───
+            let vibrationTimer = null;
+            let progressTimer = null;
+            let borderFlash = null;
+
+            function startAccessibilityFeedback() {
+                // 1. 화면 테두리 깜빡임
+                if (!borderFlash) {
+                    borderFlash = document.createElement('div');
+                    borderFlash.className = 'screen-border-flash';
+                    document.body.appendChild(borderFlash);
+                }
+
+                // 2. 지속 진동 (2초마다 짧은 펄스)
+                if (navigator.vibrate) {
+                    navigator.vibrate(150);
+                    vibrationTimer = setInterval(() => {
+                        if (navigator.vibrate) navigator.vibrate([30, 200, 30]);
+                    }, 2000);
+                }
+
+                // 3. 프로그레스 바 업데이트
+                progressTimer = setInterval(() => {
+                    if (player.duration > 0) {
+                        const pct = (player.currentTime / player.duration) * 100;
+                        const bar = document.getElementById('progressBar');
+                        if (bar) bar.style.width = pct + '%';
+                    }
+                }, 200);
+            }
+
+            function stopAccessibilityFeedback() {
+                if (borderFlash) { borderFlash.remove(); borderFlash = null; }
+                if (vibrationTimer) { clearInterval(vibrationTimer); vibrationTimer = null; }
+                if (progressTimer) { clearInterval(progressTimer); progressTimer = null; }
+                if (navigator.vibrate) navigator.vibrate(0);
+            }
+
             player.onplay = () => {
                 status.className = 'play-status playing';
-                status.innerHTML = '<span class="eq-bars"><span></span><span></span><span></span><span></span><span></span></span> 음성 재생 중...';
+                status.innerHTML = '<span class="eq-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span> 음성 재생 중...<div class="play-progress"><div id="progressBar" class="play-progress-bar" style="width:0%"></div></div>';
                 status.classList.remove('hidden');
-                // 진동 (지원 시)
-                if (navigator.vibrate) navigator.vibrate(100);
+                startAccessibilityFeedback();
             };
             player.onended = () => {
+                stopAccessibilityFeedback();
                 status.className = 'play-status done';
                 status.textContent = '✓ 재생 완료';
-                if (navigator.vibrate) navigator.vibrate(50);
+                if (navigator.vibrate) navigator.vibrate([50, 100, 50]);
                 setTimeout(() => status.classList.add('hidden'), 3000);
             };
             player.onpause = () => {
                 if (!player.ended) {
+                    stopAccessibilityFeedback();
                     status.className = 'play-status done';
                     status.textContent = '⏸ 일시정지';
                 }
