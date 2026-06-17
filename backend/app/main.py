@@ -20,30 +20,42 @@ VOICE_SEEDS = [
     {"clova_speaker": "ko-KR-SunHiNeural", "display_name": "선히 (여성)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "bright", "sort_order": 1},
     {"clova_speaker": "ko-KR-InJoonNeural", "display_name": "인준 (남성)", "gender": "male", "age_group": "middle_aged", "region": "seoul", "tone": "calm", "sort_order": 2},
     {"clova_speaker": "ko-KR-HyunsuMultilingualNeural", "display_name": "현수 (남성)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "warm", "sort_order": 3},
+    # ─── 🇰🇷 한국어 (다국어 음성) ───
+    {"clova_speaker": "en-US-AvaMultilingualNeural", "display_name": "아바 (여성, 밝은)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "bright", "sort_order": 4},
+    {"clova_speaker": "en-US-EmmaMultilingualNeural", "display_name": "엠마 (여성, 따뜻한)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "warm", "sort_order": 5},
+    {"clova_speaker": "fr-FR-VivienneMultilingualNeural", "display_name": "비비안 (여성, 우아한)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "elegant", "sort_order": 6},
+    {"clova_speaker": "de-DE-SeraphinaMultilingualNeural", "display_name": "세라피나 (여성, 차분한)", "gender": "female", "age_group": "middle_aged", "region": "seoul", "tone": "calm", "sort_order": 7},
+    {"clova_speaker": "pt-BR-ThalitaMultilingualNeural", "display_name": "탈리타 (여성, 부드러운)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "gentle", "sort_order": 8},
+    {"clova_speaker": "en-US-AndrewMultilingualNeural", "display_name": "앤드류 (남성, 차분한)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "calm", "sort_order": 9},
+    {"clova_speaker": "en-US-BrianMultilingualNeural", "display_name": "브라이언 (남성, 진지한)", "gender": "male", "age_group": "middle_aged", "region": "seoul", "tone": "serious", "sort_order": 10},
+    {"clova_speaker": "fr-FR-RemyMultilingualNeural", "display_name": "레미 (남성, 부드러운)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "gentle", "sort_order": 11},
+    {"clova_speaker": "de-DE-FlorianMultilingualNeural", "display_name": "플로리안 (남성, 활기찬)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "energetic", "sort_order": 12},
+    {"clova_speaker": "en-AU-WilliamMultilingualNeural", "display_name": "윌리엄 (남성, 따뜻한)", "gender": "male", "age_group": "middle_aged", "region": "seoul", "tone": "warm", "sort_order": 13},
+    {"clova_speaker": "it-IT-GiuseppeMultilingualNeural", "display_name": "주세페 (남성, 친근한)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "friendly", "sort_order": 14},
     # ─── 🇺🇸 영어 ───
-    {"clova_speaker": "en-US-JennyNeural", "display_name": "Jenny (여성, English)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "friendly", "sort_order": 4},
-    {"clova_speaker": "en-US-GuyNeural", "display_name": "Guy (남성, English)", "gender": "male", "age_group": "middle_aged", "region": "seoul", "tone": "calm", "sort_order": 5},
+    {"clova_speaker": "en-US-JennyNeural", "display_name": "Jenny (여성, English)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "friendly", "sort_order": 15},
+    {"clova_speaker": "en-US-GuyNeural", "display_name": "Guy (남성, English)", "gender": "male", "age_group": "middle_aged", "region": "seoul", "tone": "calm", "sort_order": 16},
     # ─── 🇯🇵 일본어 ───
-    {"clova_speaker": "ja-JP-NanamiNeural", "display_name": "나나미 (여성, 日本語)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "gentle", "sort_order": 6},
-    {"clova_speaker": "ja-JP-KeitaNeural", "display_name": "케이타 (남성, 日本語)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "calm", "sort_order": 7},
+    {"clova_speaker": "ja-JP-NanamiNeural", "display_name": "나나미 (여성, 日本語)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "gentle", "sort_order": 17},
+    {"clova_speaker": "ja-JP-KeitaNeural", "display_name": "케이타 (남성, 日本語)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "calm", "sort_order": 18},
     # ─── 🇨🇳 중국어 ───
-    {"clova_speaker": "zh-CN-XiaoxiaoNeural", "display_name": "샤오샤오 (여성, 中文)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "bright", "sort_order": 8},
-    {"clova_speaker": "zh-CN-YunjianNeural", "display_name": "윈지엔 (남성, 中文)", "gender": "male", "age_group": "middle_aged", "region": "seoul", "tone": "serious", "sort_order": 9},
+    {"clova_speaker": "zh-CN-XiaoxiaoNeural", "display_name": "샤오샤오 (여성, 中文)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "bright", "sort_order": 19},
+    {"clova_speaker": "zh-CN-YunjianNeural", "display_name": "윈지엔 (남성, 中文)", "gender": "male", "age_group": "middle_aged", "region": "seoul", "tone": "serious", "sort_order": 20},
     # ─── 🇻🇳 베트남어 ───
-    {"clova_speaker": "vi-VN-HoaiMyNeural", "display_name": "호아이미 (여성, Tiếng Việt)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "warm", "sort_order": 10},
-    {"clova_speaker": "vi-VN-NamMinhNeural", "display_name": "남민 (남성, Tiếng Việt)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "calm", "sort_order": 11},
+    {"clova_speaker": "vi-VN-HoaiMyNeural", "display_name": "호아이미 (여성, Tiếng Việt)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "warm", "sort_order": 21},
+    {"clova_speaker": "vi-VN-NamMinhNeural", "display_name": "남민 (남성, Tiếng Việt)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "calm", "sort_order": 22},
     # ─── 🇪🇸 스페인어 ───
-    {"clova_speaker": "es-ES-ElviraNeural", "display_name": "엘비라 (여성, Español)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "elegant", "sort_order": 12},
-    {"clova_speaker": "es-ES-AlvaroNeural", "display_name": "알바로 (남성, Español)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "energetic", "sort_order": 13},
+    {"clova_speaker": "es-ES-ElviraNeural", "display_name": "엘비라 (여성, Español)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "elegant", "sort_order": 23},
+    {"clova_speaker": "es-ES-AlvaroNeural", "display_name": "알바로 (남성, Español)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "energetic", "sort_order": 24},
     # ─── 🇲🇳 몽골어 ───
-    {"clova_speaker": "mn-MN-YesuiNeural", "display_name": "예수이 (여성, Монгол)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "gentle", "sort_order": 14},
-    {"clova_speaker": "mn-MN-BataaNeural", "display_name": "바타 (남성, Монгол)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "serious", "sort_order": 15},
+    {"clova_speaker": "mn-MN-YesuiNeural", "display_name": "예수이 (여성, Монгол)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "gentle", "sort_order": 25},
+    {"clova_speaker": "mn-MN-BataaNeural", "display_name": "바타 (남성, Монгол)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "serious", "sort_order": 26},
     # ─── 🇮🇳 힌디어 ───
-    {"clova_speaker": "hi-IN-SwaraNeural", "display_name": "스와라 (여성, हिन्दी)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "warm", "sort_order": 16},
-    {"clova_speaker": "hi-IN-MadhurNeural", "display_name": "마두르 (남성, हिन्दी)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "friendly", "sort_order": 17},
+    {"clova_speaker": "hi-IN-SwaraNeural", "display_name": "스와라 (여성, हिन्दी)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "warm", "sort_order": 27},
+    {"clova_speaker": "hi-IN-MadhurNeural", "display_name": "마두르 (남성, हिन्दी)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "friendly", "sort_order": 28},
     # ─── 🇫🇷 프랑스어 ───
-    {"clova_speaker": "fr-FR-DeniseNeural", "display_name": "드니즈 (여성, Français)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "elegant", "sort_order": 18},
-    {"clova_speaker": "fr-FR-HenriNeural", "display_name": "앙리 (남성, Français)", "gender": "male", "age_group": "middle_aged", "region": "seoul", "tone": "calm", "sort_order": 19},
+    {"clova_speaker": "fr-FR-DeniseNeural", "display_name": "드니즈 (여성, Français)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "elegant", "sort_order": 29},
+    {"clova_speaker": "fr-FR-HenriNeural", "display_name": "앙리 (남성, Français)", "gender": "male", "age_group": "middle_aged", "region": "seoul", "tone": "calm", "sort_order": 30},
 ]
 
 

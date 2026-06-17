@@ -564,7 +564,9 @@ async function loadVoices() {
             };
             const grouped = {};
             personas.forEach(p => {
-                const prefix = p.clova_speaker.split('-').slice(0,2).join('-');
+                const code = p.clova_speaker;
+                // Multilingual 음성은 한국어 그룹에 포함
+                const prefix = code.includes('Multilingual') ? 'ko-KR' : code.split('-').slice(0,2).join('-');
                 if (!grouped[prefix]) grouped[prefix] = [];
                 grouped[prefix].push(p);
             });
