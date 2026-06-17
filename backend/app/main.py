@@ -7,9 +7,46 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
+from sqlalchemy import select
+
 from app.config import get_settings
 from app.api.v1 import admin, auth, tts, voices, phrases, websocket
-from app.core.database import engine, Base
+from app.core.database import engine, Base, async_session
+from app.models.voice_persona import VoicePersona
+
+
+VOICE_SEEDS = [
+    {
+        "clova_speaker": "ko-KR-SunHiNeural",
+        "display_name": "선히 (여성, 밝은 톤)",
+        "gender": "female",
+        "age_group": "young_adult",
+        "region": "seoul",
+        "tone": "bright",
+        "emotion_support": False,
+        "sort_order": 1,
+    },
+    {
+        "clova_speaker": "ko-KR-InJoonNeural",
+        "display_name": "인준 (남성, 차분한 톤)",
+        "gender": "male",
+        "age_group": "middle_aged",
+        "region": "seoul",
+        "tone": "calm",
+        "emotion_support": False,
+        "sort_order": 2,
+    },
+    {
+        "clova_speaker": "ko-KR-HyunsuMultilingualNeural",
+        "display_name": "현수 (남성, 따뜻한 톤)",
+        "gender": "male",
+        "age_group": "young_adult",
+        "region": "seoul",
+        "tone": "warm",
+        "emotion_support": False,
+        "sort_order": 3,
+    },
+]
 
 
 @asynccontextmanager
@@ -17,6 +54,13 @@ async def lifespan(app: FastAPI):
     # Startup: 테이블 자동 생성
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    # 음성 시드 데이터 삽입
+    async with async_session() as session:
+        result = await session.execute(select(VoicePersona).limit(1))
+        if result.scalar_one_or_none() is None:
+            for seed in VOICE_SEEDS:
+                session.add(VoicePersona(**seed))
+            await session.commit()
     yield
     # Shutdown
     await engine.dispose()
