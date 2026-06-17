@@ -276,6 +276,58 @@
         }
         .audio-bar audio { flex: 1; width: 100%; height: 36px; }
 
+        /* 재생 상태 표시 (농인 접근성) */
+        .play-status {
+            margin-top: 12px;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+        .play-status.playing {
+            background: #E76F51;
+            color: #FFF;
+            animation: pulse 1s ease-in-out infinite;
+        }
+        .play-status.done {
+            background: #006A63;
+            color: #FFF;
+        }
+        .play-status.error {
+            background: #BA1A1A;
+            color: #FFF;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .eq-bars {
+            display: inline-flex;
+            gap: 3px;
+            height: 20px;
+            align-items: flex-end;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        .eq-bars span {
+            display: inline-block;
+            width: 4px;
+            background: #FFF;
+            border-radius: 2px;
+            animation: eqBounce 0.8s ease-in-out infinite;
+        }
+        .eq-bars span:nth-child(1) { animation-delay: 0s; height: 8px; }
+        .eq-bars span:nth-child(2) { animation-delay: 0.15s; height: 14px; }
+        .eq-bars span:nth-child(3) { animation-delay: 0.3s; height: 10px; }
+        .eq-bars span:nth-child(4) { animation-delay: 0.45s; height: 16px; }
+        .eq-bars span:nth-child(5) { animation-delay: 0.1s; height: 12px; }
+        @keyframes eqBounce {
+            0%, 100% { transform: scaleY(0.4); }
+            50% { transform: scaleY(1); }
+        }
+
         /* iOS safe area */
         @supports (padding-top: env(safe-area-inset-top)) {
             .top-bar { padding-top: calc(12px + env(safe-area-inset-top)); }
@@ -371,6 +423,8 @@
             <button id="speakBtn" class="btn-speak" onclick="synthesize()">🔊 음성 변환</button>
             <button class="btn-icon" onclick="addToFavorite()" title="즐겨찾기 추가">⭐</button>
         </div>
+
+        <div id="playStatus" class="play-status hidden"></div>
 
         <div id="audioBar" class="audio-bar hidden">
             <audio id="audioPlayer" controls></audio>
@@ -617,12 +671,38 @@ async function synthesize() {
             const blob = await res.blob();
             const url = URL.createObjectURL(blob);
             const player = document.getElementById('audioPlayer');
+            const status = document.getElementById('playStatus');
             player.src = url;
             document.getElementById('audioBar').classList.remove('hidden');
+
+            // 재생 시작 시각 피드백
+            player.onplay = () => {
+                status.className = 'play-status playing';
+                status.innerHTML = '<span class="eq-bars"><span></span><span></span><span></span><span></span><span></span></span> 음성 재생 중...';
+                status.classList.remove('hidden');
+                // 진동 (지원 시)
+                if (navigator.vibrate) navigator.vibrate(100);
+            };
+            player.onended = () => {
+                status.className = 'play-status done';
+                status.textContent = '✓ 재생 완료';
+                if (navigator.vibrate) navigator.vibrate(50);
+                setTimeout(() => status.classList.add('hidden'), 3000);
+            };
+            player.onpause = () => {
+                if (!player.ended) {
+                    status.className = 'play-status done';
+                    status.textContent = '⏸ 일시정지';
+                }
+            };
+
             player.play();
         } else {
             const err = await res.json().catch(() => ({}));
-            alert(err.detail || 'TTS 변환에 실패했습니다.');
+            const status = document.getElementById('playStatus');
+            status.className = 'play-status error';
+            status.textContent = '✕ ' + (err.detail || 'TTS 변환에 실패했습니다.');
+            status.classList.remove('hidden');
         }
     } catch (e) {
         alert('서버에 연결할 수 없습니다.');
