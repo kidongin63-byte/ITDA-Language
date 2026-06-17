@@ -16,36 +16,34 @@ from app.models.voice_persona import VoicePersona
 
 
 VOICE_SEEDS = [
-    {
-        "clova_speaker": "ko-KR-SunHiNeural",
-        "display_name": "선히 (여성, 밝은 톤)",
-        "gender": "female",
-        "age_group": "young_adult",
-        "region": "seoul",
-        "tone": "bright",
-        "emotion_support": False,
-        "sort_order": 1,
-    },
-    {
-        "clova_speaker": "ko-KR-InJoonNeural",
-        "display_name": "인준 (남성, 차분한 톤)",
-        "gender": "male",
-        "age_group": "middle_aged",
-        "region": "seoul",
-        "tone": "calm",
-        "emotion_support": False,
-        "sort_order": 2,
-    },
-    {
-        "clova_speaker": "ko-KR-HyunsuMultilingualNeural",
-        "display_name": "현수 (남성, 따뜻한 톤)",
-        "gender": "male",
-        "age_group": "young_adult",
-        "region": "seoul",
-        "tone": "warm",
-        "emotion_support": False,
-        "sort_order": 3,
-    },
+    # ─── 🇰🇷 한국어 ───
+    {"clova_speaker": "ko-KR-SunHiNeural", "display_name": "선히 (여성)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "bright", "sort_order": 1},
+    {"clova_speaker": "ko-KR-InJoonNeural", "display_name": "인준 (남성)", "gender": "male", "age_group": "middle_aged", "region": "seoul", "tone": "calm", "sort_order": 2},
+    {"clova_speaker": "ko-KR-HyunsuMultilingualNeural", "display_name": "현수 (남성)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "warm", "sort_order": 3},
+    # ─── 🇺🇸 영어 ───
+    {"clova_speaker": "en-US-JennyNeural", "display_name": "Jenny (여성, English)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "friendly", "sort_order": 4},
+    {"clova_speaker": "en-US-GuyNeural", "display_name": "Guy (남성, English)", "gender": "male", "age_group": "middle_aged", "region": "seoul", "tone": "calm", "sort_order": 5},
+    # ─── 🇯🇵 일본어 ───
+    {"clova_speaker": "ja-JP-NanamiNeural", "display_name": "나나미 (여성, 日本語)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "gentle", "sort_order": 6},
+    {"clova_speaker": "ja-JP-KeitaNeural", "display_name": "케이타 (남성, 日本語)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "calm", "sort_order": 7},
+    # ─── 🇨🇳 중국어 ───
+    {"clova_speaker": "zh-CN-XiaoxiaoNeural", "display_name": "샤오샤오 (여성, 中文)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "bright", "sort_order": 8},
+    {"clova_speaker": "zh-CN-YunjianNeural", "display_name": "윈지엔 (남성, 中文)", "gender": "male", "age_group": "middle_aged", "region": "seoul", "tone": "serious", "sort_order": 9},
+    # ─── 🇻🇳 베트남어 ───
+    {"clova_speaker": "vi-VN-HoaiMyNeural", "display_name": "호아이미 (여성, Tiếng Việt)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "warm", "sort_order": 10},
+    {"clova_speaker": "vi-VN-NamMinhNeural", "display_name": "남민 (남성, Tiếng Việt)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "calm", "sort_order": 11},
+    # ─── 🇪🇸 스페인어 ───
+    {"clova_speaker": "es-ES-ElviraNeural", "display_name": "엘비라 (여성, Español)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "elegant", "sort_order": 12},
+    {"clova_speaker": "es-ES-AlvaroNeural", "display_name": "알바로 (남성, Español)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "energetic", "sort_order": 13},
+    # ─── 🇲🇳 몽골어 ───
+    {"clova_speaker": "mn-MN-YesuiNeural", "display_name": "예수이 (여성, Монгол)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "gentle", "sort_order": 14},
+    {"clova_speaker": "mn-MN-BataaNeural", "display_name": "바타 (남성, Монгол)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "serious", "sort_order": 15},
+    # ─── 🇮🇳 힌디어 ───
+    {"clova_speaker": "hi-IN-SwaraNeural", "display_name": "스와라 (여성, हिन्दी)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "warm", "sort_order": 16},
+    {"clova_speaker": "hi-IN-MadhurNeural", "display_name": "마두르 (남성, हिन्दी)", "gender": "male", "age_group": "young_adult", "region": "seoul", "tone": "friendly", "sort_order": 17},
+    # ─── 🇫🇷 프랑스어 ───
+    {"clova_speaker": "fr-FR-DeniseNeural", "display_name": "드니즈 (여성, Français)", "gender": "female", "age_group": "young_adult", "region": "seoul", "tone": "elegant", "sort_order": 18},
+    {"clova_speaker": "fr-FR-HenriNeural", "display_name": "앙리 (남성, Français)", "gender": "male", "age_group": "middle_aged", "region": "seoul", "tone": "calm", "sort_order": 19},
 ]
 
 
@@ -54,10 +52,12 @@ async def lifespan(app: FastAPI):
     # Startup: 테이블 자동 생성
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    # 음성 시드 데이터 삽입
+    # 음성 시드 데이터 삽입 (새 음성 추가 시 자동 반영)
     async with async_session() as session:
-        result = await session.execute(select(VoicePersona).limit(1))
-        if result.scalar_one_or_none() is None:
+        from sqlalchemy import func
+        count = (await session.execute(select(func.count()).select_from(VoicePersona))).scalar()
+        if count < len(VOICE_SEEDS):
+            await session.execute(VoicePersona.__table__.delete())
             for seed in VOICE_SEEDS:
                 session.add(VoicePersona(**seed))
             await session.commit()

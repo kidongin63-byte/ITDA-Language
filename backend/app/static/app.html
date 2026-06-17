@@ -551,11 +551,35 @@ async function loadVoices() {
             personas = await res.json();
             const sel = document.getElementById('voiceSelect');
             sel.innerHTML = '';
+            const langGroups = {
+                'ko-KR': '🇰🇷 한국어',
+                'en-US': '🇺🇸 영어',
+                'ja-JP': '🇯🇵 일본어',
+                'zh-CN': '🇨🇳 중국어',
+                'vi-VN': '🇻🇳 베트남어',
+                'es-ES': '🇪🇸 스페인어',
+                'mn-MN': '🇲🇳 몽골어',
+                'hi-IN': '🇮🇳 힌디어',
+                'fr-FR': '🇫🇷 프랑스어',
+            };
+            const grouped = {};
             personas.forEach(p => {
-                const opt = document.createElement('option');
-                opt.value = p.clova_speaker;
-                opt.textContent = p.display_name + ' (' + (p.gender === 'female' ? '여' : '남') + ')';
-                sel.appendChild(opt);
+                const prefix = p.clova_speaker.split('-').slice(0,2).join('-');
+                if (!grouped[prefix]) grouped[prefix] = [];
+                grouped[prefix].push(p);
+            });
+            Object.entries(langGroups).forEach(([prefix, label]) => {
+                const voices = grouped[prefix];
+                if (!voices) return;
+                const grp = document.createElement('optgroup');
+                grp.label = label;
+                voices.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.clova_speaker;
+                    opt.textContent = p.display_name;
+                    grp.appendChild(opt);
+                });
+                sel.appendChild(grp);
             });
         }
     } catch (e) {}
