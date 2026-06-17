@@ -478,6 +478,15 @@ window.addEventListener('DOMContentLoaded', () => {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/static/sw.js');
     }
+
+    // 키보드 올라올 때 입력란 자동 스크롤
+    document.querySelectorAll('input, textarea, select').forEach(el => {
+        el.addEventListener('focus', () => {
+            setTimeout(() => {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        });
+    });
 });
 
 // ─── API 호출 ───
