@@ -11,6 +11,14 @@ class Settings(BaseSettings):
     # Database (SQLite by default)
     DATABASE_URL: str = "sqlite+aiosqlite:///./itda_dev.db"
 
+    @property
+    def effective_database_url(self) -> str:
+        """Render 환경에서는 /tmp에 DB 저장"""
+        import os
+        if os.environ.get("RENDER"):
+            return "sqlite+aiosqlite:////tmp/itda.db"
+        return self.DATABASE_URL
+
     # JWT Auth
     JWT_SECRET_KEY: str = "change-me-in-production"
     JWT_ALGORITHM: str = "HS256"
