@@ -24,7 +24,7 @@ pydantic
 pydantic-settings
 
 # Translation
-openai
+deep-translator
 langdetect
 
 # Utilities

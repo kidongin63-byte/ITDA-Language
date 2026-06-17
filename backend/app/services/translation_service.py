@@ -1,50 +1,39 @@
 """
-번역 서비스 — 텍스트 언어와 음성 언어가 다를 때 GPT-4o-mini로 자동 번역.
+번역 서비스 — 텍스트 언어와 음성 언어가 다를 때 자동 번역.
 농인과 외국인 간 다국어 대화를 지원한다.
+Google Translate (무료, API 키 불필요)를 사용한다.
 """
 
+import asyncio
 import logging
-from openai import AsyncOpenAI
+from deep_translator import GoogleTranslator
 from langdetect import detect, LangDetectException
-
-from app.config import get_settings
 
 logger = logging.getLogger(__name__)
 
-# Edge TTS 음성 코드 → 언어 이름 매핑
+# Edge TTS 음성 코드 → deep_translator 언어 코드 매핑
 VOICE_LANG_MAP = {
-    "ko": "Korean",
-    "en": "English",
-    "ja": "Japanese",
-    "zh": "Chinese",
-    "vi": "Vietnamese",
-    "es": "Spanish",
-    "fr": "French",
-    "de": "German",
-    "hi": "Hindi",
-    "pt": "Portuguese",
-    "it": "Italian",
-    "mn": "Mongolian",
-    "ru": "Russian",
-    "th": "Thai",
-    "ar": "Arabic",
+    "ko": "ko",
+    "en": "en",
+    "ja": "ja",
+    "zh": "zh-CN",
+    "vi": "vi",
+    "es": "es",
+    "fr": "fr",
+    "de": "de",
+    "hi": "hi",
+    "pt": "pt",
+    "it": "it",
+    "mn": "mn",
+    "ru": "ru",
+    "th": "th",
+    "ar": "ar",
 }
-
-_client: AsyncOpenAI | None = None
-
-
-def _get_client() -> AsyncOpenAI:
-    global _client
-    if _client is None:
-        _client = AsyncOpenAI(api_key=get_settings().OPENAI_API_KEY)
-    return _client
 
 
 def extract_voice_language(speaker: str) -> str:
     """음성 코드에서 언어 코드 추출. 예: 'ko-KR-SunHiNeural:+30' → 'ko'"""
-    # 피치 오프셋 제거
     voice = speaker.split(":")[0]
-    # 첫 번째 세그먼트가 언어 코드
     return voice.split("-")[0].lower()
 
 
@@ -52,7 +41,6 @@ def detect_text_language(text: str) -> str:
     """텍스트 언어 감지. 실패 시 'ko' 반환 (주 사용자가 한국 농인)"""
     try:
         lang = detect(text)
-        # langdetect은 'zh-cn', 'zh-tw' 등을 반환할 수 있음
         return lang.split("-")[0].lower()
     except LangDetectException:
         return "ko"
@@ -63,30 +51,20 @@ def is_multilingual_voice(speaker: str) -> bool:
     return "Multilingual" in speaker.split(":")[0]
 
 
-async def translate_text(text: str, source_lang: str, target_lang: str) -> str:
-    """GPT-4o-mini로 번역. 간결하고 자연스러운 번역을 반환."""
-    client = _get_client()
-    source_name = VOICE_LANG_MAP.get(source_lang, source_lang)
-    target_name = VOICE_LANG_MAP.get(target_lang, target_lang)
+def _translate_sync(text: str, source_lang: str, target_lang: str) -> str:
+    """Google Translate 동기 호출"""
+    src = VOICE_LANG_MAP.get(source_lang, source_lang)
+    tgt = VOICE_LANG_MAP.get(target_lang, target_lang)
+    translator = GoogleTranslator(source=src, target=tgt)
+    return translator.translate(text)
 
-    response = await client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    f"Translate the following {source_name} text to {target_name}. "
-                    "This is for a deaf communication app, so keep the translation "
-                    "natural and easy to understand. "
-                    "Return ONLY the translated text, nothing else."
-                ),
-            },
-            {"role": "user", "content": text},
-        ],
-        temperature=0.3,
-        max_tokens=1500,
+
+async def translate_text(text: str, source_lang: str, target_lang: str) -> str:
+    """Google Translate를 비동기로 호출 (스레드풀 사용)"""
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(
+        None, _translate_sync, text, source_lang, target_lang
     )
-    return response.choices[0].message.content.strip()
 
 
 async def auto_translate_if_needed(text: str, speaker: str) -> tuple[str, bool]:
@@ -95,10 +73,6 @@ async def auto_translate_if_needed(text: str, speaker: str) -> tuple[str, bool]:
     Returns: (번역된 텍스트 또는 원본, 번역 여부)
     """
     try:
-        settings = get_settings()
-        if not settings.OPENAI_API_KEY:
-            return text, False
-
         # 다국어 음성은 번역 불필요
         if is_multilingual_voice(speaker):
             return text, False
@@ -114,6 +88,5 @@ async def auto_translate_if_needed(text: str, speaker: str) -> tuple[str, bool]:
         return translated, True
 
     except Exception as e:
-        # 번역 실패해도 TTS는 계속 시도
         logger.warning("번역 실패, 원본 텍스트 사용: %s", e)
         return text, False
