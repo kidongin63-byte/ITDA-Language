@@ -573,7 +573,7 @@ async function synthesize() {
     try {
         const body = {
             text,
-            speaker: document.getElementById('voiceSelect').value || 'nara',
+            speaker: document.getElementById('voiceSelect').value || 'ko-KR-SunHiNeural',
             speed: parseInt(document.getElementById('speed').value),
             pitch: parseInt(document.getElementById('pitch').value),
             volume: parseInt(document.getElementById('volume').value),

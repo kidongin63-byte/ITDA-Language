@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 
 class TTSSynthesizeRequest(BaseModel):
     text: str = Field(..., min_length=1, max_length=1000, description="합성할 텍스트")
-    speaker: str = Field(default="nara", description="CLOVA 화자 코드")
+    speaker: str = Field(default="ko-KR-SunHiNeural", description="Edge TTS 화자 코드")
     speed: int = Field(default=0, ge=-5, le=5, description="속도 (-5~5)")
     pitch: int = Field(default=0, ge=-5, le=5, description="피치 (-5~5)")
     volume: int = Field(default=0, ge=-5, le=5, description="볼륨 (-5~5)")
@@ -24,7 +24,7 @@ class TTSStreamMessage(BaseModel):
     """WebSocket 메시지 포맷"""
     type: str  # 'synthesize'
     text: str
-    speaker: str = "nara"
+    speaker: str = "ko-KR-SunHiNeural"
     speed: int = 0
     pitch: int = 0
     volume: int = 0
