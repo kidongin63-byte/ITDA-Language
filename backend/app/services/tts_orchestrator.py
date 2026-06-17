@@ -12,6 +12,7 @@ from app.models.phrase import TTSUsageLog
 from app.schemas.tts import TTSSynthesizeRequest
 from app.services import cache_service
 from app.services.tts_base import TTSEngineBase
+from app.services.translation_service import auto_translate_if_needed
 
 settings = get_settings()
 
@@ -38,7 +39,24 @@ class TTSOrchestrator:
     async def synthesize_with_cache(
         self, request: TTSSynthesizeRequest, user_id: str, db: AsyncSession
     ) -> bytes:
-        """캐시 확인 → 합성 → 캐시 저장 → 사용 로그 기록"""
+        """자동 번역 → 캐시 확인 → 합성 → 캐시 저장 → 사용 로그 기록"""
+        # 텍스트 언어 ≠ 음성 언어일 때 자동 번역
+        translated_text, was_translated = await auto_translate_if_needed(
+            request.text, request.speaker
+        )
+        if was_translated:
+            request = TTSSynthesizeRequest(
+                text=translated_text,
+                speaker=request.speaker,
+                speed=request.speed,
+                pitch=request.pitch,
+                volume=request.volume,
+                emotion=request.emotion,
+                emotion_strength=request.emotion_strength,
+                alpha=request.alpha,
+                format=request.format,
+            )
+
         cache_key = self._engine.make_cache_key(
             request.speaker, request.text, request.speed, request.pitch, request.volume
         )
@@ -63,9 +81,10 @@ class TTSOrchestrator:
     async def synthesize_stream_chunks(
         self, text: str, speaker: str, speed: int = 0, pitch: int = 0, volume: int = 0
     ) -> list[tuple[bytes, int]]:
-        """문장 단위 분할 합성 (WebSocket 스트리밍용)"""
+        """자동 번역 → 문장 단위 분할 합성 (WebSocket 스트리밍용)"""
+        translated_text, _ = await auto_translate_if_needed(text, speaker)
         return await self._engine.synthesize_sentences(
-            text, speaker, speed, pitch, volume
+            translated_text, speaker, speed, pitch, volume
         )
 
     async def _log_usage(

@@ -34,6 +34,9 @@ class Settings(BaseSettings):
     CLOVA_CLIENT_ID: str = ""
     CLOVA_CLIENT_SECRET: str = ""
 
+    # OpenAI API (번역용)
+    OPENAI_API_KEY: str = ""
+
     # TTS Engine: "edge" (무료, 기본) 또는 "clova" (유료, 고도화 시)
     TTS_ENGINE: str = "edge"
 

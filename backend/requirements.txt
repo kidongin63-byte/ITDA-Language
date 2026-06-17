@@ -23,6 +23,10 @@ python-multipart
 pydantic
 pydantic-settings
 
+# Translation
+openai
+langdetect
+
 # Utilities
 python-dotenv
 email-validator
