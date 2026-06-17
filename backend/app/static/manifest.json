@@ -4,7 +4,7 @@
   "description": "소리로 이어주는 따뜻한 다리",
   "start_url": "/app",
   "display": "standalone",
-  "background_color": "#00A49A",
+  "background_color": "#000000",
   "theme_color": "#E76F51",
   "orientation": "portrait",
   "icons": [
