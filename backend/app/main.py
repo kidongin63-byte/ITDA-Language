@@ -60,6 +60,13 @@ async def root():
         return f.read()
 
 
+@app.get("/app", include_in_schema=False, response_class=HTMLResponse)
+async def pwa_app():
+    app_path = os.path.join(static_dir, "app.html")
+    with open(app_path, "r", encoding="utf-8") as f:
+        return f.read()
+
+
 @app.get("/health")
 async def health_check():
     return {"status": "ok", "version": settings.APP_VERSION}

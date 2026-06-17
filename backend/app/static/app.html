@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#E76F51">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="apple-touch-icon" href="/static/itda_logo.png">
+    <title>잇다</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            background: #FFF9F6;
+            min-height: 100vh;
+            color: #2E2520;
+            overflow-x: hidden;
+        }
+        /* 공통 */
+        .hidden { display: none !important; }
+        .page { min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* ─── 로그인/회원가입 ─── */
+        .auth-page {
+            justify-content: center;
+            align-items: center;
+            padding: 32px;
+        }
+        .auth-page .logo { width: 80px; height: 80px; margin-bottom: 8px; }
+        .auth-page .app-name { font-size: 28px; font-weight: 900; }
+        .auth-page .subtitle { font-size: 14px; color: #78716C; margin-bottom: 32px; }
+        .form-group { width: 100%; max-width: 360px; margin-bottom: 12px; }
+        .form-row { display: flex; gap: 8px; align-items: center; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid #DEC0B9;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #FFF;
+            color: #2E2520;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: #E76F51; }
+        .form-group label { display: block; font-size: 13px; color: #78716C; margin-bottom: 4px; }
+        .btn-primary {
+            width: 100%; max-width: 360px;
+            padding: 16px;
+            background: #E76F51;
+            color: #FFF;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover { background: #A33D23; }
+        .btn-primary:disabled { background: #DEC0B9; cursor: not-allowed; }
+        .switch-mode {
+            margin-top: 16px;
+            font-size: 14px;
+            color: #78716C;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .error-msg { color: #BA1A1A; font-size: 14px; margin-bottom: 8px; text-align: center; max-width: 360px; }
+        .at-sign { font-size: 18px; font-weight: bold; color: #78716C; padding: 0 4px; }
+
+        /* ─── 홈 ─── */
+        .home-page { padding: 0; }
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: #FFF;
+            border-bottom: 1px solid #EAD6D1;
+        }
+        .top-bar .logo-small { width: 36px; height: 36px; }
+        .top-bar .title { font-size: 18px; font-weight: 800; }
+        .top-bar .user-btn {
+            background: none; border: none;
+            font-size: 14px; color: #78716C; cursor: pointer;
+        }
+
+        /* 탭 */
+        .tabs {
+            display: flex;
+            background: #FFF;
+            border-bottom: 1px solid #EAD6D1;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #78716C;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn.active { color: #E76F51; border-bottom-color: #E76F51; }
+
+        /* TTS 탭 */
+        .tab-content { flex: 1; padding: 20px; }
+        .tts-area {
+            width: 100%;
+            min-height: 160px;
+            padding: 16px;
+            border: 1.5px solid #DEC0B9;
+            border-radius: 16px;
+            font-size: 16px;
+            font-family: inherit;
+            background: #FFF;
+            color: #2E2520;
+            resize: none;
+            outline: none;
+        }
+        .tts-area:focus { border-color: #E76F51; }
+        .char-count { text-align: right; font-size: 12px; color: #8A716C; margin-top: 4px; }
+        .tts-controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            align-items: center;
+        }
+        .btn-speak {
+            flex: 1;
+            padding: 16px;
+            background: #E76F51;
+            color: #FFF;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .btn-speak:disabled { background: #DEC0B9; }
+        .btn-icon {
+            width: 52px; height: 52px;
+            border-radius: 12px;
+            border: 1.5px solid #DEC0B9;
+            background: #FFF;
+            cursor: pointer;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 즐겨찾기 탭 */
+        .phrase-list { list-style: none; }
+        .phrase-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: #FFF;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border: 1px solid #EAD6D1;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .phrase-item:active { background: #FFF1ED; }
+        .phrase-text { flex: 1; font-size: 15px; }
+        .phrase-count { font-size: 12px; color: #8A716C; }
+        .phrase-play { font-size: 20px; background: none; border: none; cursor: pointer; }
+        .phrase-categories {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
+        .cat-btn {
+            white-space: nowrap;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1.5px solid #DEC0B9;
+            background: #FFF;
+            font-size: 13px;
+            cursor: pointer;
+            color: #57423D;
+            transition: all 0.2s;
+        }
+        .cat-btn.active { background: #E76F51; color: #FFF; border-color: #E76F51; }
+
+        /* 음성 선택 */
+        .voice-select { margin-bottom: 16px; }
+        .voice-select select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #DEC0B9;
+            border-radius: 12px;
+            font-size: 14px;
+            background: #FFF;
+            outline: none;
+        }
+        .voice-select select:focus { border-color: #E76F51; }
+        .voice-label { font-size: 13px; color: #78716C; margin-bottom: 6px; }
+
+        /* 설정 모달 */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 100;
+        }
+        .modal {
+            background: #FFF;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 24px 24px 0 0;
+            padding: 24px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .modal h3 { font-size: 18px; margin-bottom: 16px; }
+        .modal .close-btn {
+            float: right;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #78716C;
+        }
+        .slider-group { margin-bottom: 16px; }
+        .slider-group label { font-size: 14px; display: flex; justify-content: space-between; }
+        .slider-group input[type=range] {
+            width: 100%;
+            accent-color: #E76F51;
+            margin-top: 4px;
+        }
+
+        /* 로딩 */
+        .spinner {
+            display: inline-block;
+            width: 20px; height: 20px;
+            border: 2.5px solid #FFF;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* 오디오 시각화 */
+        .audio-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #FFF1ED;
+            border-radius: 12px;
+        }
+        .audio-bar audio { flex: 1; width: 100%; height: 36px; }
+
+        /* iOS safe area */
+        @supports (padding-top: env(safe-area-inset-top)) {
+            .top-bar { padding-top: calc(12px + env(safe-area-inset-top)); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ════════ 로그인 페이지 ════════ -->
+<div id="authPage" class="page auth-page">
+    <img src="/static/itda_logo.png" alt="로고" class="logo">
+    <div class="app-name">잇다</div>
+    <div class="subtitle">소리로 이어주는 따뜻한 다리</div>
+
+    <div id="authError" class="error-msg hidden"></div>
+
+    <div class="form-group">
+        <div class="form-row">
+            <input type="text" id="emailId" placeholder="이메일" style="flex:1">
+            <span class="at-sign">@</span>
+            <select id="emailDomain" style="flex:1">
+                <option value="gmail.com">gmail.com</option>
+                <option value="naver.com">naver.com</option>
+                <option value="daum.net">daum.net</option>
+                <option value="kakao.com">kakao.com</option>
+                <option value="hanmail.net">hanmail.net</option>
+                <option value="nate.com">nate.com</option>
+                <option value="icloud.com">icloud.com</option>
+                <option value="outlook.com">outlook.com</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- 회원가입 추가 필드 -->
+    <div id="registerFields" class="hidden">
+        <div class="form-group">
+            <input type="text" id="nickname" placeholder="이름 (실명)">
+        </div>
+        <div class="form-group">
+            <input type="tel" id="phone" placeholder="전화번호 (010-1234-5678)">
+        </div>
+        <div class="form-group">
+            <div class="form-row">
+                <select id="gender" style="flex:1">
+                    <option value="">성별 선택</option>
+                    <option value="male">남성</option>
+                    <option value="female">여성</option>
+                </select>
+                <input type="text" id="birthId" placeholder="생년월일 (YYMMDD)" maxlength="6" style="flex:1">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <input type="password" id="password" placeholder="비밀번호">
+    </div>
+
+    <button id="authBtn" class="btn-primary" onclick="handleAuth()">로그인</button>
+    <button class="switch-mode" onclick="toggleAuthMode()">
+        <span id="switchText">계정이 없으신가요? 회원가입</span>
+    </button>
+</div>
+
+<!-- ════════ 홈 페이지 ════════ -->
+<div id="homePage" class="page home-page hidden">
+    <!-- 상단 바 -->
+    <div class="top-bar">
+        <div style="display:flex;align-items:center;gap:8px;">
+            <img src="/static/itda_logo.png" alt="로고" class="logo-small">
+            <span class="title">잇다</span>
+        </div>
+        <button class="user-btn" onclick="logout()">로그아웃</button>
+    </div>
+
+    <!-- 탭 -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tts')">텍스트→음성</button>
+        <button class="tab-btn" onclick="switchTab('phrases')">즐겨찾기</button>
+    </div>
+
+    <!-- TTS 탭 -->
+    <div id="ttsTab" class="tab-content">
+        <div class="voice-select">
+            <div class="voice-label">음성 선택</div>
+            <select id="voiceSelect"></select>
+        </div>
+
+        <textarea id="ttsText" class="tts-area" placeholder="여기에 텍스트를 입력하세요..." maxlength="1000"></textarea>
+        <div class="char-count"><span id="charCount">0</span>/1000</div>
+
+        <div class="tts-controls">
+            <button class="btn-icon" onclick="openSettings()" title="설정">⚙️</button>
+            <button id="speakBtn" class="btn-speak" onclick="synthesize()">🔊 음성 변환</button>
+            <button class="btn-icon" onclick="addToFavorite()" title="즐겨찾기 추가">⭐</button>
+        </div>
+
+        <div id="audioBar" class="audio-bar hidden">
+            <audio id="audioPlayer" controls></audio>
+        </div>
+    </div>
+
+    <!-- 즐겨찾기 탭 -->
+    <div id="phrasesTab" class="tab-content hidden">
+        <div class="phrase-categories" id="categoryBar"></div>
+        <ul class="phrase-list" id="phraseList"></ul>
+    </div>
+</div>
+
+<!-- ════════ 설정 모달 ════════ -->
+<div id="settingsModal" class="modal-overlay hidden" onclick="closeSettings(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+        <button class="close-btn" onclick="document.getElementById('settingsModal').classList.add('hidden')">✕</button>
+        <h3>음성 설정</h3>
+        <div class="slider-group">
+            <label>속도 <span id="speedVal">0</span></label>
+            <input type="range" id="speed" min="-5" max="5" value="0" oninput="document.getElementById('speedVal').textContent=this.value">
+        </div>
+        <div class="slider-group">
+            <label>높낮이 <span id="pitchVal">0</span></label>
+            <input type="range" id="pitch" min="-5" max="5" value="0" oninput="document.getElementById('pitchVal').textContent=this.value">
+        </div>
+        <div class="slider-group">
+            <label>볼륨 <span id="volumeVal">0</span></label>
+            <input type="range" id="volume" min="-5" max="5" value="0" oninput="document.getElementById('volumeVal').textContent=this.value">
+        </div>
+    </div>
+</div>
+
+<script>
+const API = '';
+let token = localStorage.getItem('itda_token') || '';
+let refreshToken = localStorage.getItem('itda_refresh') || '';
+let isLoginMode = true;
+let personas = [];
+let phrases = [];
+let currentCategory = 'all';
+
+// ─── 초기화 ───
+window.addEventListener('DOMContentLoaded', () => {
+    if (token) {
+        showHome();
+    }
+    document.getElementById('ttsText').addEventListener('input', e => {
+        document.getElementById('charCount').textContent = e.target.value.length;
+    });
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/static/sw.js');
+    }
+});
+
+// ─── API 호출 ───
+async function api(path, opts = {}) {
+    const headers = { 'Content-Type': 'application/json', ...opts.headers };
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+    const res = await fetch(API + path, { ...opts, headers });
+    if (res.status === 401 && refreshToken) {
+        const r = await fetch(API + '/api/v1/auth/refresh', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh_token: refreshToken })
+        });
+        if (r.ok) {
+            const d = await r.json();
+            token = d.access_token;
+            refreshToken = d.refresh_token;
+            localStorage.setItem('itda_token', token);
+            localStorage.setItem('itda_refresh', refreshToken);
+            headers['Authorization'] = 'Bearer ' + token;
+            return fetch(API + path, { ...opts, headers });
+        } else {
+            logout();
+            return res;
+        }
+    }
+    return res;
+}
+
+// ─── 인증 ───
+function toggleAuthMode() {
+    isLoginMode = !isLoginMode;
+    document.getElementById('registerFields').classList.toggle('hidden', isLoginMode);
+    document.getElementById('authBtn').textContent = isLoginMode ? '로그인' : '회원가입';
+    document.getElementById('switchText').textContent = isLoginMode
+        ? '계정이 없으신가요? 회원가입'
+        : '이미 계정이 있으신가요? 로그인';
+    document.getElementById('authError').classList.add('hidden');
+}
+
+async function handleAuth() {
+    const btn = document.getElementById('authBtn');
+    const emailId = document.getElementById('emailId').value.trim();
+    const domain = document.getElementById('emailDomain').value;
+    const email = emailId + '@' + domain;
+    const password = document.getElementById('password').value;
+    const errEl = document.getElementById('authError');
+    errEl.classList.add('hidden');
+
+    if (!emailId || !password) {
+        errEl.textContent = '이메일과 비밀번호를 입력해주세요.';
+        errEl.classList.remove('hidden');
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>';
+
+    try {
+        let res;
+        if (isLoginMode) {
+            res = await fetch(API + '/api/v1/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+        } else {
+            const nickname = document.getElementById('nickname').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const gender = document.getElementById('gender').value;
+            const birthId = document.getElementById('birthId').value.trim();
+            if (!nickname) {
+                errEl.textContent = '이름을 입력해주세요.';
+                errEl.classList.remove('hidden');
+                btn.disabled = false;
+                btn.textContent = '회원가입';
+                return;
+            }
+            res = await fetch(API + '/api/v1/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password, nickname, phone, gender, birth_id: birthId })
+            });
+        }
+
+        if (res.ok) {
+            const data = await res.json();
+            token = data.access_token;
+            refreshToken = data.refresh_token;
+            localStorage.setItem('itda_token', token);
+            localStorage.setItem('itda_refresh', refreshToken);
+            showHome();
+        } else {
+            const err = await res.json().catch(() => ({}));
+            errEl.textContent = err.detail || '오류가 발생했습니다.';
+            errEl.classList.remove('hidden');
+        }
+    } catch (e) {
+        errEl.textContent = '서버에 연결할 수 없습니다.';
+        errEl.classList.remove('hidden');
+    }
+    btn.disabled = false;
+    btn.textContent = isLoginMode ? '로그인' : '회원가입';
+}
+
+function logout() {
+    token = '';
+    refreshToken = '';
+    localStorage.removeItem('itda_token');
+    localStorage.removeItem('itda_refresh');
+    document.getElementById('homePage').classList.add('hidden');
+    document.getElementById('authPage').classList.remove('hidden');
+}
+
+// ─── 홈 ───
+async function showHome() {
+    document.getElementById('authPage').classList.add('hidden');
+    document.getElementById('homePage').classList.remove('hidden');
+    loadVoices();
+    loadPhrases();
+}
+
+// ─── 음성 목록 ───
+async function loadVoices() {
+    try {
+        const res = await fetch(API + '/api/v1/voices/personas');
+        if (res.ok) {
+            personas = await res.json();
+            const sel = document.getElementById('voiceSelect');
+            sel.innerHTML = '';
+            personas.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.clova_speaker;
+                opt.textContent = p.display_name + ' (' + (p.gender === 'female' ? '여' : '남') + ')';
+                sel.appendChild(opt);
+            });
+        }
+    } catch (e) {}
+}
+
+// ─── TTS ───
+async function synthesize() {
+    const text = document.getElementById('ttsText').value.trim();
+    if (!text) return;
+
+    const btn = document.getElementById('speakBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> 변환 중...';
+
+    try {
+        const body = {
+            text,
+            speaker: document.getElementById('voiceSelect').value || 'nara',
+            speed: parseInt(document.getElementById('speed').value),
+            pitch: parseInt(document.getElementById('pitch').value),
+            volume: parseInt(document.getElementById('volume').value),
+            format: 'mp3'
+        };
+        const res = await api('/api/v1/tts/synthesize', {
+            method: 'POST',
+            body: JSON.stringify(body)
+        });
+
+        if (res.ok) {
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const player = document.getElementById('audioPlayer');
+            player.src = url;
+            document.getElementById('audioBar').classList.remove('hidden');
+            player.play();
+        } else {
+            const err = await res.json().catch(() => ({}));
+            alert(err.detail || 'TTS 변환에 실패했습니다.');
+        }
+    } catch (e) {
+        alert('서버에 연결할 수 없습니다.');
+    }
+    btn.disabled = false;
+    btn.innerHTML = '🔊 음성 변환';
+}
+
+// ─── 즐겨찾기 ───
+const categoryNames = {
+    all: '전체',
+    greeting: '인사',
+    request: '요청',
+    thanks: '감사',
+    daily: '일상',
+    emergency: '긴급',
+    medical: '의료',
+    order: '주문',
+    custom: '사용자'
+};
+
+async function loadPhrases() {
+    // 카테고리 바
+    const bar = document.getElementById('categoryBar');
+    bar.innerHTML = '';
+    Object.entries(categoryNames).forEach(([key, name]) => {
+        const btn = document.createElement('button');
+        btn.className = 'cat-btn' + (key === currentCategory ? ' active' : '');
+        btn.textContent = name;
+        btn.onclick = () => { currentCategory = key; loadPhrases(); };
+        bar.appendChild(btn);
+    });
+
+    try {
+        const url = currentCategory === 'all'
+            ? '/api/v1/phrases'
+            : '/api/v1/phrases?category=' + currentCategory;
+        const res = await api(url);
+        if (res.ok) {
+            phrases = await res.json();
+            renderPhrases();
+        }
+    } catch (e) {}
+}
+
+function renderPhrases() {
+    const list = document.getElementById('phraseList');
+    if (phrases.length === 0) {
+        list.innerHTML = '<li style="text-align:center;color:#78716C;padding:40px;">즐겨찾기가 없습니다.<br><br><button class="btn-primary" style="max-width:200px;font-size:14px;" onclick="addPresets()">기본 문구 추가하기</button></li>';
+        return;
+    }
+    list.innerHTML = phrases.map(p => `
+        <li class="phrase-item" onclick="speakPhrase('${p.id}', '${p.phrase_text.replace(/'/g, "\\'")}')">
+            <span class="phrase-text">${p.phrase_text}</span>
+            <span class="phrase-count">${p.usage_count}회</span>
+            <button class="phrase-play">▶</button>
+        </li>
+    `).join('');
+}
+
+async function speakPhrase(id, text) {
+    document.getElementById('ttsText').value = text;
+    document.getElementById('charCount').textContent = text.length;
+    switchTab('tts');
+    // 사용 횟수 증가
+    api('/api/v1/phrases/' + id + '/use', { method: 'POST' });
+    synthesize();
+}
+
+async function addToFavorite() {
+    const text = document.getElementById('ttsText').value.trim();
+    if (!text) return;
+    try {
+        const res = await api('/api/v1/phrases', {
+            method: 'POST',
+            body: JSON.stringify({ phrase_text: text, category: 'custom' })
+        });
+        if (res.ok) alert('즐겨찾기에 추가되었습니다!');
+        else {
+            const err = await res.json().catch(() => ({}));
+            alert(err.detail || '추가에 실패했습니다.');
+        }
+    } catch (e) {
+        alert('서버에 연결할 수 없습니다.');
+    }
+}
+
+async function addPresets() {
+    try {
+        const res = await api('/api/v1/phrases/presets/add-all', { method: 'POST' });
+        if (res.ok) { loadPhrases(); }
+    } catch (e) {}
+}
+
+// ─── 탭 전환 ───
+function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+        b.classList.toggle('active', (tab === 'tts' && i === 0) || (tab === 'phrases' && i === 1));
+    });
+    document.getElementById('ttsTab').classList.toggle('hidden', tab !== 'tts');
+    document.getElementById('phrasesTab').classList.toggle('hidden', tab !== 'phrases');
+    if (tab === 'phrases') loadPhrases();
+}
+
+// ─── 설정 모달 ───
+function openSettings() {
+    document.getElementById('settingsModal').classList.remove('hidden');
+}
+function closeSettings(e) {
+    if (e.target === document.getElementById('settingsModal')) {
+        document.getElementById('settingsModal').classList.add('hidden');
+    }
+}
+</script>
+</body>
+</html>
