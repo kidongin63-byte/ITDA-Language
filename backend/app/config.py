@@ -22,8 +22,8 @@ class Settings(BaseSettings):
     # JWT Auth
     JWT_SECRET_KEY: str = "change-me-in-production"
     JWT_ALGORITHM: str = "HS256"
-    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 10080  # 7일
+    JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 90
 
     # CLOVA Voice API
     CLOVA_API_URL: str = "https://naveropenapi.apigw.ntruss.com/tts-premium/v1/tts"
