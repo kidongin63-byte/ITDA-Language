@@ -481,6 +481,11 @@
         <button class="close-btn" onclick="document.getElementById('settingsModal').classList.add('hidden')">✕</button>
         <h3>음성 설정</h3>
         <div class="slider-group">
+            <label>🔊 기기 볼륨 <span id="deviceVolVal">100%</span></label>
+            <input type="range" id="deviceVolume" min="0" max="100" value="100" oninput="setDeviceVolume(this.value)">
+        </div>
+        <hr style="border:none;border-top:1px solid #EAD6D1;margin:12px 0;">
+        <div class="slider-group">
             <label>속도 <span id="speedVal">0</span></label>
             <input type="range" id="speed" min="-5" max="5" value="0" oninput="document.getElementById('speedVal').textContent=this.value">
         </div>
@@ -489,7 +494,7 @@
             <input type="range" id="pitch" min="-5" max="5" value="0" oninput="document.getElementById('pitchVal').textContent=this.value">
         </div>
         <div class="slider-group">
-            <label>볼륨 <span id="volumeVal">0</span></label>
+            <label>TTS 볼륨 <span id="volumeVal">0</span></label>
             <input type="range" id="volume" min="-5" max="5" value="0" oninput="document.getElementById('volumeVal').textContent=this.value">
         </div>
     </div>
@@ -891,8 +896,23 @@ function switchTab(tab) {
     if (tab === 'phrases') loadPhrases();
 }
 
+// ─── 기기 볼륨 제어 ───
+function setDeviceVolume(val) {
+    const pct = parseInt(val);
+    document.getElementById('deviceVolVal').textContent = pct + '%';
+    const player = document.getElementById('audioPlayer');
+    if (player) player.volume = pct / 100;
+}
+
 // ─── 설정 모달 ───
 function openSettings() {
+    // 현재 플레이어 볼륨 반영
+    const player = document.getElementById('audioPlayer');
+    const slider = document.getElementById('deviceVolume');
+    if (player && slider) {
+        slider.value = Math.round(player.volume * 100);
+        document.getElementById('deviceVolVal').textContent = slider.value + '%';
+    }
     document.getElementById('settingsModal').classList.remove('hidden');
 }
 function closeSettings(e) {
