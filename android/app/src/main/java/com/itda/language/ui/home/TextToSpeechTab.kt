@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -77,6 +78,42 @@ fun TextToSpeechTab(
             vibrate(context, 80)
             kotlinx.coroutines.delay(150)
             vibrate(context, 80)
+        }
+    }
+
+    // 재생 중 문장 단위 펄스 진동 — 농인이 손으로 "지금 말하고 있다"를 느낄 수 있도록
+    val lastSentenceIndex = remember { mutableIntStateOf(-1) }
+    LaunchedEffect(uiState.isPlaying) {
+        if (!uiState.isPlaying) {
+            lastSentenceIndex.intValue = -1
+        }
+    }
+    LaunchedEffect(uiState.isPlaying, uiState.playbackProgress) {
+        if (!uiState.isPlaying || uiState.playbackProgress <= 0f) return@LaunchedEffect
+
+        val text = uiState.inputText
+        if (text.isBlank()) return@LaunchedEffect
+
+        // 문장 경계 위치를 텍스트 비율(0~1)로 계산
+        val sentenceEnds = mutableListOf<Float>()
+        text.forEachIndexed { index, char ->
+            if (char in listOf('.', '!', '?', '。', '\n')) {
+                sentenceEnds.add((index + 1).toFloat() / text.length)
+            }
+        }
+        // 마지막에 문장부호가 없으면 끝을 추가
+        if (sentenceEnds.isEmpty() || sentenceEnds.last() < 0.99f) {
+            sentenceEnds.add(1f)
+        }
+
+        // 현재 진행률이 어느 문장에 해당하는지 계산
+        val currentSentence = sentenceEnds.indexOfFirst { it > uiState.playbackProgress }
+            .let { if (it == -1) sentenceEnds.lastIndex else it }
+
+        // 새 문장에 진입하면 짧은 펄스 진동 (시작 진동과 중복 방지: index 0은 건너뜀)
+        if (currentSentence > 0 && currentSentence != lastSentenceIndex.intValue) {
+            lastSentenceIndex.intValue = currentSentence
+            vibrate(context, 30)
         }
     }
 
