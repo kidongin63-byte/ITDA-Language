@@ -365,6 +365,63 @@
             transition: width 0.3s linear;
         }
 
+        /* 볼륨 상태 + 조절 바 */
+        .volume-control {
+            margin-top: 12px;
+            padding: 12px 14px;
+            background: #FFF;
+            border: 1.5px solid #DEC0B9;
+            border-radius: 12px;
+        }
+        .volume-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .vol-btn {
+            width: 36px; height: 36px;
+            border: 1.5px solid #DEC0B9;
+            border-radius: 8px;
+            background: #FFF;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .vol-btn:active { background: #FFF1ED; }
+        .vol-bar-wrap {
+            flex: 1;
+            height: 14px;
+            background: #EAD6D1;
+            border-radius: 7px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+        .vol-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #006A63, #E76F51);
+            border-radius: 7px;
+            transition: width 0.15s;
+        }
+        .vol-percent {
+            font-size: 14px;
+            font-weight: 700;
+            color: #2E2520;
+            min-width: 40px;
+            text-align: right;
+        }
+        .vol-status-text {
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 6px;
+        }
+        .vol-status-text.ok { color: #006A63; }
+        .vol-status-text.low { color: #E65100; }
+        .vol-status-text.muted { color: #BA1A1A; }
+
         /* 스피커 상태 표시 */
         .speaker-status {
             margin-top: 12px;
@@ -572,6 +629,19 @@
         <div class="char-count"><span id="charCount">0</span>/1000</div>
 
         <div id="speakerStatus" class="speaker-status"></div>
+
+        <!-- 볼륨 상태 + 조절 바 -->
+        <div class="volume-control">
+            <div class="volume-row">
+                <button class="vol-btn" onclick="changeVolume(-10)">🔉</button>
+                <div class="vol-bar-wrap">
+                    <div id="volBar" class="vol-bar" style="width:100%"></div>
+                </div>
+                <button class="vol-btn" onclick="changeVolume(+10)">🔊</button>
+                <span id="volPercent" class="vol-percent">100%</span>
+            </div>
+            <div id="volStatusText" class="vol-status-text ok">볼륨 정상</div>
+        </div>
 
         <div class="tts-controls">
             <button class="btn-icon" onclick="openSettings()" title="설정">⚙️</button>
@@ -1028,6 +1098,56 @@ function switchTab(tab) {
     if (tab === 'phrases') loadPhrases();
 }
 
+// ─── 볼륨 바 제어 ───
+let currentVolume = 100;
+
+function changeVolume(delta) {
+    currentVolume = Math.max(0, Math.min(100, currentVolume + delta));
+    applyVolume();
+    if (navigator.vibrate) navigator.vibrate(20);
+}
+
+function setVolumeFromBar(e) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX || e.touches[0].clientX;
+    currentVolume = Math.round(Math.max(0, Math.min(100, ((x - rect.left) / rect.width) * 100)));
+    applyVolume();
+}
+
+function applyVolume() {
+    const player = document.getElementById('audioPlayer');
+    if (player) player.volume = currentVolume / 100;
+
+    document.getElementById('volBar').style.width = currentVolume + '%';
+    document.getElementById('volPercent').textContent = currentVolume + '%';
+
+    // 설정 모달 슬라이더 동기화
+    const slider = document.getElementById('deviceVolume');
+    if (slider) { slider.value = currentVolume; document.getElementById('deviceVolVal').textContent = currentVolume + '%'; }
+
+    // 상태 텍스트
+    const statusEl = document.getElementById('volStatusText');
+    if (currentVolume === 0) {
+        statusEl.textContent = '🔇 음소거 — 상대방이 들을 수 없습니다!';
+        statusEl.className = 'vol-status-text muted';
+    } else if (currentVolume < 20) {
+        statusEl.textContent = '🔉 볼륨 낮음 — 상대방이 못 들을 수 있습니다';
+        statusEl.className = 'vol-status-text low';
+    } else {
+        statusEl.textContent = '🔊 볼륨 정상';
+        statusEl.className = 'vol-status-text ok';
+    }
+}
+
+// 볼륨 바 터치/클릭 이벤트
+window.addEventListener('DOMContentLoaded', () => {
+    const barWrap = document.querySelector('.vol-bar-wrap');
+    if (barWrap) {
+        barWrap.addEventListener('click', setVolumeFromBar);
+        barWrap.addEventListener('touchmove', (e) => { e.preventDefault(); setVolumeFromBar(e); }, { passive: false });
+    }
+});
+
 // ─── 스피커 테스트 (테스트 음 재생 + 마이크로 확인) ───
 async function testSpeaker() {
     const statusEl = document.getElementById('speakerStatus');
@@ -1109,14 +1229,8 @@ async function testSpeaker() {
 
 // ─── 기기 볼륨 제어 ───
 function setDeviceVolume(val) {
-    const pct = parseInt(val);
-    document.getElementById('deviceVolVal').textContent = pct + '%';
-    const player = document.getElementById('audioPlayer');
-    if (player) player.volume = pct / 100;
-    // 경고 자동 해제
-    if (pct > 10) {
-        document.getElementById('volumeWarning').classList.add('hidden');
-    }
+    currentVolume = parseInt(val);
+    applyVolume();
 }
 
 // ─── 볼륨 경고 (재생 전 확인) ───
