@@ -365,6 +365,73 @@
             transition: width 0.3s linear;
         }
 
+        /* 볼륨 경고 배너 */
+        .volume-warning {
+            margin-top: 12px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: #BA1A1A;
+            color: #FFF;
+            font-size: 15px;
+            font-weight: 700;
+            text-align: center;
+            animation: warningShake 0.5s ease-in-out;
+        }
+        .volume-warning .boost-btn {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 8px 20px;
+            background: #FFF;
+            color: #BA1A1A;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        @keyframes warningShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+
+        /* 실시간 오디오 레벨 미터 */
+        .audio-level {
+            margin-top: 10px;
+            padding: 12px 16px;
+            background: #FFF;
+            border: 1.5px solid #DEC0B9;
+            border-radius: 12px;
+        }
+        .audio-level-label {
+            font-size: 13px;
+            color: #78716C;
+            margin-bottom: 6px;
+        }
+        .audio-level-bar-wrap {
+            height: 12px;
+            background: #EAD6D1;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .audio-level-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #006A63, #E76F51, #BA1A1A);
+            transition: width 0.1s;
+        }
+        .audio-level-text {
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 4px;
+            text-align: center;
+        }
+        .audio-level-text.ok { color: #006A63; }
+        .audio-level-text.muted { color: #BA1A1A; }
+
         /* iOS safe area */
         @supports (padding-top: env(safe-area-inset-top)) {
             .top-bar { padding-top: calc(12px + env(safe-area-inset-top)); }
@@ -461,7 +528,15 @@
             <button class="btn-icon" onclick="addToFavorite()" title="즐겨찾기 추가">⭐</button>
         </div>
 
+        <div id="volumeWarning" class="volume-warning hidden"></div>
         <div id="playStatus" class="play-status hidden"></div>
+        <div id="audioLevel" class="audio-level hidden">
+            <div class="audio-level-label">스피커 출력</div>
+            <div class="audio-level-bar-wrap">
+                <div id="audioLevelBar" class="audio-level-bar"></div>
+            </div>
+            <div id="audioLevelText" class="audio-level-text">확인 중...</div>
+        </div>
 
         <div id="audioBar" class="audio-bar hidden">
             <audio id="audioPlayer" controls></audio>
@@ -769,9 +844,11 @@ async function synthesize() {
                 status.innerHTML = '<span class="eq-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span> 음성 재생 중...<div class="play-progress"><div id="progressBar" class="play-progress-bar" style="width:0%"></div></div>';
                 status.classList.remove('hidden');
                 startAccessibilityFeedback();
+                startAudioLevelMonitor(player);
             };
             player.onended = () => {
                 stopAccessibilityFeedback();
+                stopAudioLevelMonitor();
                 status.className = 'play-status done';
                 status.textContent = '✓ 재생 완료';
                 if (navigator.vibrate) navigator.vibrate([50, 100, 50]);
@@ -780,11 +857,14 @@ async function synthesize() {
             player.onpause = () => {
                 if (!player.ended) {
                     stopAccessibilityFeedback();
+                    stopAudioLevelMonitor();
                     status.className = 'play-status done';
                     status.textContent = '⏸ 일시정지';
                 }
             };
 
+            // 볼륨 확인 후 재생
+            checkVolumeBeforePlay();
             player.play();
         } else {
             const err = await res.json().catch(() => ({}));
@@ -902,6 +982,90 @@ function setDeviceVolume(val) {
     document.getElementById('deviceVolVal').textContent = pct + '%';
     const player = document.getElementById('audioPlayer');
     if (player) player.volume = pct / 100;
+    // 경고 자동 해제
+    if (pct > 10) {
+        document.getElementById('volumeWarning').classList.add('hidden');
+    }
+}
+
+// ─── 볼륨 경고 (재생 전 확인) ───
+function checkVolumeBeforePlay() {
+    const player = document.getElementById('audioPlayer');
+    const warning = document.getElementById('volumeWarning');
+
+    if (player.volume === 0 || player.muted) {
+        warning.innerHTML = '🔇 음소거 상태입니다 — 상대방이 들을 수 없습니다!<br><button class="boost-btn" onclick="boostVolume()">🔊 볼륨 올리기</button>';
+        warning.classList.remove('hidden');
+        if (navigator.vibrate) navigator.vibrate([80, 100, 80, 100, 80]);
+        return false;
+    }
+    if (player.volume < 0.15) {
+        warning.innerHTML = '🔉 볼륨이 너무 낮습니다 — 상대방이 잘 듣지 못할 수 있습니다<br><button class="boost-btn" onclick="boostVolume()">🔊 볼륨 올리기</button>';
+        warning.classList.remove('hidden');
+        if (navigator.vibrate) navigator.vibrate([80, 100, 80]);
+    }
+    return true;
+}
+
+function boostVolume() {
+    const player = document.getElementById('audioPlayer');
+    player.volume = 1.0;
+    player.muted = false;
+    document.getElementById('deviceVolume').value = 100;
+    document.getElementById('deviceVolVal').textContent = '100%';
+    document.getElementById('volumeWarning').classList.add('hidden');
+    if (navigator.vibrate) navigator.vibrate(50);
+}
+
+// ─── 실시간 오디오 레벨 모니터 (Web Audio API) ───
+let audioCtx = null;
+let analyser = null;
+let audioSource = null;
+let levelTimer = null;
+
+function startAudioLevelMonitor(player) {
+    try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (!audioSource) {
+            audioSource = audioCtx.createMediaElementSource(player);
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 256;
+            audioSource.connect(analyser);
+            analyser.connect(audioCtx.destination);
+        }
+
+        const levelEl = document.getElementById('audioLevel');
+        const barEl = document.getElementById('audioLevelBar');
+        const textEl = document.getElementById('audioLevelText');
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        levelEl.classList.remove('hidden');
+
+        levelTimer = setInterval(() => {
+            analyser.getByteFrequencyData(dataArray);
+            const avg = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+            const pct = Math.min(100, (avg / 128) * 100);
+            barEl.style.width = pct + '%';
+
+            if (pct > 5) {
+                textEl.textContent = '✓ 소리가 나가고 있습니다';
+                textEl.className = 'audio-level-text ok';
+            } else {
+                textEl.textContent = '✕ 소리가 나가지 않습니다';
+                textEl.className = 'audio-level-text muted';
+            }
+        }, 100);
+    } catch (e) {
+        // Web Audio API 미지원 시 무시
+    }
+}
+
+function stopAudioLevelMonitor() {
+    if (levelTimer) { clearInterval(levelTimer); levelTimer = null; }
+    const barEl = document.getElementById('audioLevelBar');
+    const textEl = document.getElementById('audioLevelText');
+    const levelEl = document.getElementById('audioLevel');
+    if (barEl) barEl.style.width = '0%';
+    if (levelEl) setTimeout(() => levelEl.classList.add('hidden'), 2000);
 }
 
 // ─── 설정 모달 ───
