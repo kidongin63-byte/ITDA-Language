@@ -203,7 +203,7 @@ async def lock_voice(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """최초 음성 확정 (1회만 가능)"""
+    """음성 선택 저장 (잠금 없이 자유 변경 가능)"""
     result = await db.execute(
         select(UserPreference).where(UserPreference.user_id == user.id)
     )
@@ -212,14 +212,11 @@ async def lock_voice(
         prefs = UserPreference(user_id=user.id)
         db.add(prefs)
 
-    if prefs.voice_locked:
-        raise HTTPException(400, "이미 음성이 확정되었습니다")
-
     prefs.locked_speaker = body.speaker
     prefs.locked_voice_name = body.voice_name
-    prefs.voice_locked = True
+    prefs.voice_locked = False
     await db.commit()
-    return {"message": "음성이 확정되었습니다", "locked": True}
+    return {"message": "음성이 저장되었습니다", "locked": False}
 
 
 @router.get("/lock-status")
@@ -227,13 +224,13 @@ async def get_lock_status(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """음성 잠금 상태 확인"""
+    """음성 상태 확인 (항상 잠금 해제)"""
     result = await db.execute(
         select(UserPreference).where(UserPreference.user_id == user.id)
     )
     prefs = result.scalar_one_or_none()
     return {
-        "locked": prefs.voice_locked if prefs else False,
+        "locked": False,
         "speaker": prefs.locked_speaker if prefs else None,
         "voice_name": prefs.locked_voice_name if prefs else None,
     }
