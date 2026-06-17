@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>잇다 - 소리로 이어주는 따뜻한 다리</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, 'Noto Sans KR', sans-serif;
+            background: #FFF9F6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            text-align: center;
+            padding: 40px 24px;
+            max-width: 400px;
+            width: 100%;
+        }
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 16px;
+        }
+        .app-name {
+            font-size: 32px;
+            font-weight: 900;
+            color: #2E2520;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 16px;
+            color: #78716C;
+            margin-bottom: 12px;
+        }
+        .description {
+            font-size: 14px;
+            color: #78716C;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+        .download-btn {
+            display: inline-block;
+            width: 100%;
+            padding: 16px 32px;
+            background: #E76F51;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .download-btn:hover {
+            background: #A33D23;
+        }
+        .version {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #8A716C;
+        }
+        .guide {
+            margin-top: 40px;
+            text-align: left;
+            background: #FFF1ED;
+            border-radius: 16px;
+            padding: 20px;
+        }
+        .guide h3 {
+            font-size: 15px;
+            color: #2E2520;
+            margin-bottom: 12px;
+        }
+        .guide ol {
+            padding-left: 20px;
+            font-size: 14px;
+            color: #57423D;
+            line-height: 2;
+        }
+        .api-link {
+            margin-top: 24px;
+            font-size: 13px;
+        }
+        .api-link a {
+            color: #8A716C;
+            text-decoration: none;
+        }
+        .api-link a:hover {
+            color: #E76F51;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="/static/itda_logo.png" alt="잇다 로고" class="logo">
+        <div class="app-name">잇다</div>
+        <div class="subtitle">소리로 이어주는 따뜻한 다리</div>
+        <div class="description">
+            농인을 위한 텍스트→음성 변환 서비스<br>
+            텍스트를 입력하면 자연스러운 음성으로 변환해드립니다.
+        </div>
+
+        <a href="/static/itda-language.apk" class="download-btn">
+            📥 앱 다운로드 (Android)
+        </a>
+        <div class="version">v0.1.0 · 19MB</div>
+
+        <div class="guide">
+            <h3>설치 방법</h3>
+            <ol>
+                <li>위 버튼을 눌러 APK 파일 다운로드</li>
+                <li>다운로드 완료 후 파일 열기</li>
+                <li>"출처를 알 수 없는 앱 설치" 허용</li>
+                <li>설치 완료 후 앱 실행</li>
+            </ol>
+        </div>
+
+        <div class="api-link">
+            <a href="/docs">API 문서 보기 →</a>
+        </div>
+    </div>
+</body>
+</html>

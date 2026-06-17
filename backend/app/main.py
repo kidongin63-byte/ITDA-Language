@@ -1,8 +1,11 @@
 from contextlib import asynccontextmanager
 
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.config import get_settings
 from app.api.v1 import admin, auth, tts, voices, phrases, websocket
@@ -46,9 +49,15 @@ app.include_router(websocket.router, prefix="/ws/v1", tags=["WebSocket"])
 app.include_router(admin.router, prefix="/api/v1/admin", tags=["관리자"])
 
 
-@app.get("/", include_in_schema=False)
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+
+@app.get("/", include_in_schema=False, response_class=HTMLResponse)
 async def root():
-    return RedirectResponse(url="/docs")
+    index_path = os.path.join(static_dir, "index.html")
+    with open(index_path, "r", encoding="utf-8") as f:
+        return f.read()
 
 
 @app.get("/health")
