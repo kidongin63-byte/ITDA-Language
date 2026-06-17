@@ -1,10 +1,10 @@
 {
-  "name": "잇다 - 소리로 이어주는 따뜻한 다리",
+  "name": "잇다",
   "short_name": "잇다",
   "description": "소리로 이어주는 따뜻한 다리",
   "start_url": "/app",
   "display": "standalone",
-  "background_color": "#FFF9F6",
+  "background_color": "#00A49A",
   "theme_color": "#E76F51",
   "orientation": "portrait",
   "icons": [
