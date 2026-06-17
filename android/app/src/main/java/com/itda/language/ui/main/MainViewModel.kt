@@ -74,34 +74,17 @@ class MainViewModel @Inject constructor(
     }
 
     /**
-     * 최초 음성 선택 + 잠금 (서버에 잠금 요청)
+     * 음성 선택 (잠금 없이 자유 변경)
      */
     fun selectVoiceAndLock(speaker: String, displayName: String) {
         selectVoice(speaker, displayName)
-        _uiState.value = _uiState.value.copy(voiceLocked = true)
-        viewModelScope.launch {
-            try {
-                voiceApi.lockVoice(VoiceLockRequest(speaker, displayName))
-            } catch (_: Exception) {
-                // 서버 실패해도 로컬에서는 잠금 유지
-            }
-        }
     }
 
     /**
-     * 음성 변경 요청 제출 (관리자 승인 필요)
+     * 음성 변경 (자유 변경 — 관리자 승인 불필요)
      */
     fun requestVoiceChange(speaker: String, displayName: String, reason: String) {
-        viewModelScope.launch {
-            try {
-                voiceApi.requestVoiceChange(
-                    VoiceChangeRequestBody(speaker, displayName, reason)
-                )
-                _uiState.value = _uiState.value.copy(
-                    error = null,
-                )
-            } catch (_: Exception) { }
-        }
+        selectVoice(speaker, displayName)
     }
 
     fun synthesizeAndPlay() {

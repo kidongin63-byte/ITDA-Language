@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="theme-color" content="#E76F51">
@@ -30,9 +30,12 @@
 
         /* ─── 로그인/회원가입 ─── */
         .auth-page {
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             padding: 32px;
+            padding-top: 60px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .auth-page .logo { width: 80px; height: 80px; margin-bottom: 8px; }
         .auth-page .app-name { font-size: 28px; font-weight: 900; }
