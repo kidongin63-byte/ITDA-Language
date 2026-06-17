@@ -1,5 +1,10 @@
 # ITDA Language ProGuard Rules
 
+# WebView JavaScript Bridge
+-keepclassmembers class com.itda.language.ui.webview.NativeBridge {
+    @android.webkit.JavascriptInterface <methods>;
+}
+
 # Retrofit
 -keepattributes Signature
 -keepattributes *Annotation*

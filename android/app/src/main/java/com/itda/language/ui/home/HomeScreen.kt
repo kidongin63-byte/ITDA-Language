@@ -5,11 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -34,6 +30,7 @@ fun HomeScreen(
     onNavigateToAdmin: () -> Unit = {},
     onLogout: () -> Unit = {},
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
     var selectedTab by remember { mutableIntStateOf(1) } // 기본: 텍스트→음성 탭
 
     // 관리자 접근용 탭 카운터
@@ -61,11 +58,14 @@ fun HomeScreen(
                     )
                 },
                 navigationIcon = {
-                    // 관리자 버튼 (PIN 입력 후 접근)
-                    IconButton(onClick = onNavigateToAdmin) {
+                    // 웹앱 버튼
+                    IconButton(onClick = {
+                        val intent = android.content.Intent(context, com.itda.language.ui.webview.WebViewActivity::class.java)
+                        context.startActivity(intent)
+                    }) {
                         Icon(
-                            Icons.Default.Lock,
-                            contentDescription = "관리자",
+                            Icons.Default.Home,
+                            contentDescription = "웹앱",
                             tint = OnSurface,
                         )
                     }
