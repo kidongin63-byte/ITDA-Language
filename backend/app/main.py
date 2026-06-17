@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 
 from app.config import get_settings
 from app.api.v1 import admin, auth, tts, voices, phrases, websocket
@@ -43,6 +44,11 @@ app.include_router(voices.router, prefix="/api/v1/voices", tags=["음성"])
 app.include_router(phrases.router, prefix="/api/v1/phrases", tags=["즐겨찾기"])
 app.include_router(websocket.router, prefix="/ws/v1", tags=["WebSocket"])
 app.include_router(admin.router, prefix="/api/v1/admin", tags=["관리자"])
+
+
+@app.get("/", include_in_schema=False)
+async def root():
+    return RedirectResponse(url="/docs")
 
 
 @app.get("/health")
