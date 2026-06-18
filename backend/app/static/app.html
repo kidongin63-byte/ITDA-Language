@@ -1024,6 +1024,21 @@
     </div>
 </div>
 
+<!-- ════════ 음성 선택 모달 (간단) ════════ -->
+<div id="voiceModal" class="modal-overlay hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+    <div class="modal" onclick="event.stopPropagation()" style="max-height:70vh;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <h3 style="margin:0;">음성 선택</h3>
+            <button class="close-btn" onclick="document.getElementById('voiceModal').classList.add('hidden')" style="float:none;position:static;">✕</button>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:6px;">
+            <button class="filter-chip" onclick="toggleVoiceFilters()" id="filterToggleBtn" style="font-size:11px;">필터 ▼</button>
+        </div>
+        <div id="voiceFilters" class="voice-filters hidden"></div>
+        <select id="voiceSelect" style="width:100%;padding:12px 14px;border:1.5px solid #DEC0B9;border-radius:10px;font-size:15px;background:#FFF;outline:none;" onchange="updateVoiceChip();document.getElementById('voiceModal').classList.add('hidden');"></select>
+    </div>
+</div>
+
 <!-- ════════ 설정 모달 (전체 설정 통합) ════════ -->
 <div id="settingsModal" class="modal-overlay hidden" onclick="closeSettings(event)">
     <div class="modal" onclick="event.stopPropagation()" style="max-height:85vh;">
@@ -1031,18 +1046,6 @@
             <h3 style="margin:0;">설정</h3>
             <button class="close-btn" onclick="document.getElementById('settingsModal').classList.add('hidden')" style="float:none;position:static;">✕</button>
         </div>
-
-        <!-- 음성 선택 -->
-        <div style="margin-bottom:14px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                <span style="font-size:14px;font-weight:600;color:#57423D;">음성 선택</span>
-                <button class="filter-chip" onclick="toggleVoiceFilters()" id="filterToggleBtn" style="font-size:11px;">필터 ▼</button>
-            </div>
-            <div id="voiceFilters" class="voice-filters hidden"></div>
-            <select id="voiceSelect" style="width:100%;padding:10px 14px;border:1.5px solid #DEC0B9;border-radius:10px;font-size:14px;background:#FFF;outline:none;"></select>
-        </div>
-
-        <hr style="border:none;border-top:1px solid #EAD6D1;margin:12px 0;">
 
         <!-- 속도/피치/볼륨 -->
         <div class="slider-group">
@@ -1210,12 +1213,7 @@ function renderRoomsBar() {
 
 // ─── 음성 선택 빠른 모달 ───
 function openVoiceModal() {
-    // 설정 모달 열고 음성 선택으로 스크롤
-    openSettings();
-    setTimeout(() => {
-        const sel = document.getElementById('voiceSelect');
-        if (sel) sel.focus();
-    }, 300);
+    document.getElementById('voiceModal').classList.remove('hidden');
 }
 
 function updateVoiceChip() {
