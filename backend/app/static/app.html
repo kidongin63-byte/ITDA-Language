@@ -15,6 +15,8 @@
     <meta property="og:url" content="https://itda-language.onrender.com/app">
     <meta property="og:type" content="website">
     <title>잇다</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu&family=Nanum+Gothic&family=Nanum+Myeongjo&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -1047,6 +1049,25 @@
             <button class="close-btn" onclick="document.getElementById('settingsModal').classList.add('hidden')" style="float:none;position:static;">✕</button>
         </div>
 
+        <!-- 글꼴/글씨 크기 -->
+        <div style="margin-bottom:14px;">
+            <span style="font-size:14px;font-weight:600;color:#57423D;">글꼴</span>
+            <select id="fontSelect" style="width:100%;padding:10px 14px;border:1.5px solid #DEC0B9;border-radius:10px;font-size:14px;background:#FFF;outline:none;margin-top:6px;" onchange="applyFont()">
+                <option value="'Noto Sans KR', sans-serif">기본 (Noto Sans)</option>
+                <option value="'Malgun Gothic', sans-serif">맑은 고딕</option>
+                <option value="'Nanum Gothic', sans-serif">나눔고딕</option>
+                <option value="'Nanum Myeongjo', serif">나눔명조</option>
+                <option value="monospace">고정폭 (코딩체)</option>
+                <option value="'Gaegu', cursive">개구 (손글씨)</option>
+            </select>
+        </div>
+        <div class="slider-group">
+            <label>글씨 크기 <span id="fontSizeVal">16</span>px</label>
+            <input type="range" id="fontSize" min="12" max="28" value="16" oninput="applyFontSize(this.value)">
+        </div>
+
+        <hr style="border:none;border-top:1px solid #EAD6D1;margin:12px 0;">
+
         <!-- 속도/피치/볼륨 -->
         <div class="slider-group">
             <label>속도 <span id="speedVal">0</span></label>
@@ -1214,6 +1235,39 @@ function renderRoomsBar() {
 // ─── 음성 선택 빠른 모달 ───
 function openVoiceModal() {
     document.getElementById('voiceModal').classList.remove('hidden');
+}
+
+// ─── 글꼴/글씨 크기 ───
+function applyFont() {
+    const font = document.getElementById('fontSelect').value;
+    document.documentElement.style.setProperty('--chat-font', font);
+    document.querySelectorAll('.chat-bubble-text, .chat-input, .karaoke-spoken, .karaoke-unspoken').forEach(el => {
+        el.style.fontFamily = font;
+    });
+    localStorage.setItem('itda_font', font);
+}
+
+function applyFontSize(val) {
+    const size = parseInt(val);
+    document.getElementById('fontSizeVal').textContent = size;
+    document.documentElement.style.setProperty('--chat-font-size', size + 'px');
+    document.querySelectorAll('.chat-bubble-text, .chat-input, .karaoke-spoken, .karaoke-unspoken').forEach(el => {
+        el.style.fontSize = size + 'px';
+    });
+    localStorage.setItem('itda_font_size', size);
+}
+
+function loadFontSettings() {
+    const font = localStorage.getItem('itda_font');
+    const size = localStorage.getItem('itda_font_size');
+    if (font) {
+        document.getElementById('fontSelect').value = font;
+        applyFont();
+    }
+    if (size) {
+        document.getElementById('fontSize').value = size;
+        applyFontSize(size);
+    }
 }
 
 function updateVoiceChip() {
@@ -1587,6 +1641,7 @@ async function showHome() {
     document.getElementById('homePage').classList.remove('hidden');
     initRooms();
     renderRoomsBar();
+    loadFontSettings();
     loadVoices();
     loadVoiceCategories();
     loadPhrases();
