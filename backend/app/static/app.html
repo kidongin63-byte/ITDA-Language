@@ -1155,7 +1155,7 @@ function saveChatMessages() {
 
 function createRoom(name) {
     const room = { id: Date.now(), name: name, messages: [], createdAt: new Date().toISOString() };
-    chatRooms.push(room);
+    chatRooms.unshift(room);
     currentRoomId = room.id;
     saveRooms();
     renderRoomsBar();
