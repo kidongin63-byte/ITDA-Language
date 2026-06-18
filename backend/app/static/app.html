@@ -84,7 +84,14 @@
         .at-sign { font-size: 18px; font-weight: bold; color: #78716C; padding: 0 4px; }
 
         /* ─── 홈 ─── */
-        .home-page { padding: 0; }
+        .home-page {
+            padding: 0;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
         .top-bar {
             display: flex;
             align-items: center;
@@ -92,6 +99,10 @@
             padding: 12px 20px;
             background: #FFF;
             border-bottom: 1px solid #EAD6D1;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         .top-bar .logo-small { width: 36px; height: 36px; }
         .top-bar .title { font-size: 18px; font-weight: 800; }
@@ -118,6 +129,7 @@
             display: flex;
             background: #FFF;
             border-bottom: 1px solid #EAD6D1;
+            flex-shrink: 0;
         }
         .tab-btn {
             flex: 1;
@@ -135,7 +147,7 @@
         .tab-btn.active { color: #E76F51; border-bottom-color: #E76F51; }
 
         /* TTS 탭 */
-        .tab-content { flex: 1; padding: 20px; }
+        .tab-content { flex: 1; padding: 20px; overflow-y: auto; min-height: 0; }
         .tts-area {
             width: 100%;
             min-height: 160px;
@@ -563,6 +575,7 @@
             border-bottom: 1px solid #EAD6D1;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            flex-shrink: 0;
         }
         .rooms-bar::-webkit-scrollbar { display: none; }
         .room-chip {
@@ -720,6 +733,7 @@
             padding: 10px 12px;
             background: #FFF;
             border-top: 1px solid #EAD6D1;
+            flex-shrink: 0;
         }
         @supports (padding-bottom: env(safe-area-inset-bottom)) {
             .chat-input-bar { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
