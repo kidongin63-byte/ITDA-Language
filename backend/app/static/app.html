@@ -1150,6 +1150,15 @@ async function synthesize() {
                 status.textContent = '✓ 재생 완료';
                 if (navigator.vibrate) navigator.vibrate([50, 100, 50]);
                 setTimeout(() => status.classList.add('hidden'), 3000);
+
+                // 재생 완료 → 입력창 비우고 포커스 (새 문장 바로 입력)
+                setTimeout(() => {
+                    const ta = document.getElementById('ttsText');
+                    ta.value = '';
+                    document.getElementById('charCount').textContent = '0';
+                    ta.focus();
+                    ta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 500);
             };
             player.onpause = () => {
                 if (!player.ended) {
