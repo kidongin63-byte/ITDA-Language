@@ -538,6 +538,135 @@
         .audio-level-text.ok { color: #006A63; }
         .audio-level-text.muted { color: #BA1A1A; }
 
+        /* ─── 채팅형 UI ─── */
+        .chat-history {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 16px 16px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #FFF9F6;
+        }
+        .chat-empty {
+            text-align: center;
+            color: #78716C;
+            font-size: 15px;
+            margin: auto;
+            padding: 40px 20px;
+            line-height: 1.8;
+        }
+        .chat-bubble {
+            align-self: flex-end;
+            max-width: 85%;
+            background: #E76F51;
+            color: #FFF;
+            border-radius: 16px 16px 4px 16px;
+            padding: 10px 14px;
+            word-break: break-word;
+            position: relative;
+            animation: bubbleIn 0.2s ease-out;
+        }
+        @keyframes bubbleIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chat-bubble.active {
+            background: #C4573B;
+            box-shadow: 0 2px 12px rgba(231,111,81,0.3);
+        }
+        .chat-bubble-text {
+            font-size: 16px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .chat-bubble-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .chat-replay-btn {
+            background: rgba(255,255,255,0.25);
+            border: none;
+            border-radius: 50%;
+            width: 30px; height: 30px;
+            font-size: 13px;
+            cursor: pointer;
+            color: #FFF;
+        }
+        .chat-replay-btn:active { background: rgba(255,255,255,0.4); }
+        .chat-bubble-time {
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+        }
+        /* 말풍선 내 카라오케 */
+        .chat-bubble .karaoke-spoken { color: #FFF; font-weight: 700; }
+        .chat-bubble .karaoke-unspoken { color: rgba(255,255,255,0.35); }
+        .chat-bubble .karaoke-cursor { background: #FFF; }
+        .chat-bubble-progress {
+            margin-top: 6px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .chat-bubble-progress-bar {
+            height: 100%;
+            background: #FFF;
+            border-radius: 2px;
+            transition: width 0.2s linear;
+        }
+        /* 하단 입력바 */
+        .chat-input-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: #FFF;
+            border-top: 1px solid #EAD6D1;
+        }
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .chat-input-bar { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+        }
+        .chat-input {
+            flex: 1;
+            padding: 11px 16px;
+            border: 1.5px solid #DEC0B9;
+            border-radius: 24px;
+            font-size: 16px;
+            font-family: inherit;
+            background: #FFF9F6;
+            color: #2E2520;
+            outline: none;
+        }
+        .chat-input:focus { border-color: #E76F51; }
+        .chat-send-btn {
+            width: 46px; height: 46px;
+            border-radius: 50%;
+            background: #E76F51;
+            color: #FFF;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chat-send-btn:active { background: #A33D23; }
+        .chat-send-btn:disabled { background: #DEC0B9; }
+        .chat-fav-btn {
+            width: 38px; height: 38px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
         /* ─── 이퀄라이저 캔버스 ─── */
         .eq-canvas-wrap {
             width: 100%;
@@ -753,7 +882,10 @@
             <img src="/static/itda_logo.png" alt="로고" class="logo-small">
             <span class="title">잇다</span>
         </div>
-        <button class="user-btn" onclick="logout()">로그아웃</button>
+        <div style="display:flex;align-items:center;gap:4px;">
+            <button class="user-btn" onclick="openSettings()">⚙️</button>
+            <button class="user-btn" onclick="logout()">로그아웃</button>
+        </div>
     </div>
 
     <!-- 탭 -->
@@ -762,56 +894,24 @@
         <button class="tab-btn" onclick="switchTab('phrases')">즐겨찾기</button>
     </div>
 
-    <!-- TTS 탭 -->
-    <div id="ttsTab" class="tab-content">
-        <div class="voice-select">
-            <div class="voice-label" style="display:flex;justify-content:space-between;align-items:center;">
-                음성 선택
-                <button class="filter-chip" onclick="toggleVoiceFilters()" id="filterToggleBtn" style="font-size:11px;">필터 ▼</button>
-            </div>
-            <div id="voiceFilters" class="voice-filters hidden"></div>
-            <select id="voiceSelect"></select>
+    <!-- TTS 탭 (채팅형) -->
+    <div id="ttsTab" class="tab-content" style="display:flex;flex-direction:column;padding:0;overflow:hidden;">
+        <!-- 채팅 히스토리 -->
+        <div id="chatHistory" class="chat-history">
+            <div id="chatEmpty" class="chat-empty">텍스트를 입력하면<br>음성으로 변환됩니다 🔊</div>
         </div>
 
-        <textarea id="ttsText" class="tts-area" placeholder="여기에 텍스트를 입력하세요..." maxlength="1000"></textarea>
-        <div id="karaokeView" class="karaoke-container hidden"><span id="karaokeSpoken" class="karaoke-spoken"></span><span id="karaokeCursor" class="karaoke-cursor"></span><span id="karaokeUnspoken" class="karaoke-unspoken"></span></div>
-        <div class="char-count"><span id="charCount">0</span>/1000</div>
-        <div class="eq-canvas-wrap hidden" id="eqCanvasWrap"><canvas id="eqCanvas"></canvas></div>
-
-        <div id="speakerStatus" class="speaker-status"></div>
-
-        <!-- 볼륨 상태 + 조절 바 -->
-        <div class="volume-control">
-            <div class="volume-row">
-                <button class="vol-btn" onclick="changeVolume(-10)">🔉</button>
-                <div class="vol-bar-wrap">
-                    <div id="volBar" class="vol-bar" style="width:100%"></div>
-                </div>
-                <button class="vol-btn" onclick="changeVolume(+10)">🔊</button>
-                <span id="volPercent" class="vol-percent">100%</span>
-            </div>
-            <div id="volStatusText" class="vol-status-text ok">볼륨 정상</div>
-        </div>
-
-        <div class="tts-controls">
-            <button class="btn-icon" onclick="openSettings()" title="설정">⚙️</button>
-            <button id="speakBtn" class="btn-speak" onclick="synthesize()">🔊 음성 변환</button>
-            <button class="btn-icon" onclick="addToFavorite()" title="즐겨찾기 추가">⭐</button>
-        </div>
-        <button id="testSpeakerBtn" class="test-speaker-btn" onclick="testSpeaker()">🔔 스피커 테스트</button>
-
+        <!-- 볼륨 경고 (오버레이) -->
         <div id="volumeWarning" class="volume-warning hidden"></div>
-        <div id="playStatus" class="play-status hidden"></div>
-        <div id="audioLevel" class="audio-level hidden">
-            <div class="audio-level-label">스피커 출력</div>
-            <div class="audio-level-bar-wrap">
-                <div id="audioLevelBar" class="audio-level-bar"></div>
-            </div>
-            <div id="audioLevelText" class="audio-level-text">확인 중...</div>
-        </div>
 
-        <div id="audioBar" class="audio-bar hidden">
-            <audio id="audioPlayer" controls></audio>
+        <!-- 숨겨진 오디오 -->
+        <audio id="audioPlayer" style="display:none;"></audio>
+
+        <!-- 하단 입력바 -->
+        <div class="chat-input-bar">
+            <button class="chat-fav-btn" onclick="addToFavorite()" title="즐겨찾기">⭐</button>
+            <input type="text" id="ttsText" class="chat-input" placeholder="텍스트를 입력하세요..." maxlength="1000">
+            <button id="speakBtn" class="chat-send-btn" onclick="sendMessage()">🔊</button>
         </div>
     </div>
 
@@ -826,16 +926,27 @@
     </div>
 </div>
 
-<!-- ════════ 설정 모달 ════════ -->
+<!-- ════════ 설정 모달 (전체 설정 통합) ════════ -->
 <div id="settingsModal" class="modal-overlay hidden" onclick="closeSettings(event)">
-    <div class="modal" onclick="event.stopPropagation()">
-        <button class="close-btn" onclick="document.getElementById('settingsModal').classList.add('hidden')">✕</button>
-        <h3>음성 설정</h3>
-        <div class="slider-group">
-            <label>🔊 기기 볼륨 <span id="deviceVolVal">100%</span></label>
-            <input type="range" id="deviceVolume" min="0" max="100" value="100" oninput="setDeviceVolume(this.value)">
+    <div class="modal" onclick="event.stopPropagation()" style="max-height:85vh;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="margin:0;">설정</h3>
+            <button class="close-btn" onclick="document.getElementById('settingsModal').classList.add('hidden')" style="float:none;position:static;">✕</button>
         </div>
+
+        <!-- 음성 선택 -->
+        <div style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <span style="font-size:14px;font-weight:600;color:#57423D;">음성 선택</span>
+                <button class="filter-chip" onclick="toggleVoiceFilters()" id="filterToggleBtn" style="font-size:11px;">필터 ▼</button>
+            </div>
+            <div id="voiceFilters" class="voice-filters hidden"></div>
+            <select id="voiceSelect" style="width:100%;padding:10px 14px;border:1.5px solid #DEC0B9;border-radius:10px;font-size:14px;background:#FFF;outline:none;"></select>
+        </div>
+
         <hr style="border:none;border-top:1px solid #EAD6D1;margin:12px 0;">
+
+        <!-- 속도/피치/볼륨 -->
         <div class="slider-group">
             <label>속도 <span id="speedVal">0</span></label>
             <input type="range" id="speed" min="-5" max="5" value="0" oninput="document.getElementById('speedVal').textContent=this.value">
@@ -847,6 +958,39 @@
         <div class="slider-group">
             <label>TTS 볼륨 <span id="volumeVal">0</span></label>
             <input type="range" id="volume" min="-5" max="5" value="0" oninput="document.getElementById('volumeVal').textContent=this.value">
+        </div>
+
+        <hr style="border:none;border-top:1px solid #EAD6D1;margin:12px 0;">
+
+        <!-- 기기 볼륨 -->
+        <div style="margin-bottom:14px;">
+            <span style="font-size:14px;font-weight:600;color:#57423D;">기기 볼륨</span>
+            <div class="volume-control" style="margin-top:8px;border:none;padding:0;">
+                <div class="volume-row">
+                    <button class="vol-btn" onclick="changeVolume(-10)">🔉</button>
+                    <div class="vol-bar-wrap">
+                        <div id="volBar" class="vol-bar" style="width:100%"></div>
+                    </div>
+                    <button class="vol-btn" onclick="changeVolume(+10)">🔊</button>
+                    <span id="volPercent" class="vol-percent">100%</span>
+                </div>
+                <div id="volStatusText" class="vol-status-text ok">볼륨 정상</div>
+            </div>
+        </div>
+
+        <hr style="border:none;border-top:1px solid #EAD6D1;margin:12px 0;">
+
+        <!-- 스피커 테스트 -->
+        <div id="speakerStatus" class="speaker-status"></div>
+        <button id="testSpeakerBtn" class="test-speaker-btn" onclick="testSpeaker()">🔔 스피커 테스트</button>
+
+        <!-- 오디오 레벨 -->
+        <div id="audioLevel" class="audio-level hidden" style="margin-top:12px;">
+            <div class="audio-level-label">스피커 출력</div>
+            <div class="audio-level-bar-wrap">
+                <div id="audioLevelBar" class="audio-level-bar"></div>
+            </div>
+            <div id="audioLevelText" class="audio-level-text">확인 중...</div>
         </div>
     </div>
 </div>
@@ -862,6 +1006,208 @@ let currentCategory = 'all';
 
 // ─── 네이티브 브릿지 감지 ───
 const hasNativeBridge = typeof window.NativeBridge !== 'undefined';
+
+// ─── 채팅 메시지 관리 ───
+let chatMessages = JSON.parse(localStorage.getItem('itda_chat') || '[]');
+let activeBubbleId = null;
+
+function saveChatMessages() {
+    if (chatMessages.length > 100) chatMessages = chatMessages.slice(-100);
+    localStorage.setItem('itda_chat', JSON.stringify(chatMessages));
+}
+
+function escapeHtml(text) {
+    const d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+}
+
+function scrollChatToBottom() {
+    const h = document.getElementById('chatHistory');
+    if (h) requestAnimationFrame(() => { h.scrollTop = h.scrollHeight; });
+}
+
+function renderAllChatBubbles() {
+    const h = document.getElementById('chatHistory');
+    if (!h) return;
+    h.querySelectorAll('.chat-bubble').forEach(b => b.remove());
+    const empty = document.getElementById('chatEmpty');
+    if (chatMessages.length === 0) { if (empty) empty.classList.remove('hidden'); return; }
+    if (empty) empty.classList.add('hidden');
+    chatMessages.forEach(msg => renderChatBubble(msg));
+    scrollChatToBottom();
+}
+
+function renderChatBubble(msg, isActive) {
+    const h = document.getElementById('chatHistory');
+    const empty = document.getElementById('chatEmpty');
+    if (empty) empty.classList.add('hidden');
+
+    const b = document.createElement('div');
+    b.className = 'chat-bubble' + (isActive ? ' active' : '');
+    b.id = 'bubble-' + msg.id;
+
+    const time = new Date(msg.timestamp);
+    const timeStr = time.getHours().toString().padStart(2,'0') + ':' + time.getMinutes().toString().padStart(2,'0');
+
+    b.innerHTML =
+        '<div class="chat-bubble-text">' + escapeHtml(msg.text) + '</div>' +
+        '<div class="chat-bubble-karaoke hidden" style="margin-top:6px;line-height:1.6;font-size:16px;">' +
+            '<span class="karaoke-spoken"></span><span class="karaoke-cursor"></span><span class="karaoke-unspoken"></span>' +
+        '</div>' +
+        '<div class="chat-bubble-progress hidden"><div class="chat-bubble-progress-bar" style="width:0%"></div></div>' +
+        '<div class="chat-bubble-bottom">' +
+            '<span class="chat-bubble-time">' + timeStr + '</span>' +
+            '<button class="chat-replay-btn" onclick="replayMessage(' + msg.id + ')">▶</button>' +
+        '</div>';
+
+    h.appendChild(b);
+    return b;
+}
+
+function sendMessage() {
+    const input = document.getElementById('ttsText');
+    const text = input.value.trim();
+    if (!text) return;
+
+    const msg = { id: Date.now(), text: text, timestamp: new Date().toISOString() };
+    chatMessages.push(msg);
+    saveChatMessages();
+
+    const bubble = renderChatBubble(msg, true);
+    input.value = '';
+    scrollChatToBottom();
+
+    synthesizeForMessage(msg);
+}
+
+async function synthesizeForMessage(msg) {
+    const btn = document.getElementById('speakBtn');
+    btn.disabled = true;
+    activeBubbleId = msg.id;
+    const bubble = document.getElementById('bubble-' + msg.id);
+
+    try {
+        const body = {
+            text: msg.text,
+            speaker: document.getElementById('voiceSelect').value || 'ko-KR-SunHiNeural',
+            speed: parseInt(document.getElementById('speed').value),
+            pitch: parseInt(document.getElementById('pitch').value),
+            volume: parseInt(document.getElementById('volume').value),
+            format: 'mp3'
+        };
+        const res = await api('/api/v1/tts/synthesize', { method: 'POST', body: JSON.stringify(body) });
+
+        if (res.ok) {
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const player = document.getElementById('audioPlayer');
+            player.src = url;
+            msg.audioUrl = url;
+
+            let vibTimer = null, progTimer = null, borderEl = null;
+
+            function startFeedback() {
+                borderEl = document.createElement('div');
+                borderEl.className = 'screen-border-flash';
+                document.body.appendChild(borderEl);
+                if (hasNativeBridge) NativeBridge.vibrate(150);
+                else if (navigator.vibrate) navigator.vibrate(150);
+                vibTimer = setInterval(() => {
+                    if (hasNativeBridge) NativeBridge.vibrate(30);
+                    else if (navigator.vibrate) navigator.vibrate([30, 200, 30]);
+                }, 2000);
+            }
+
+            function stopFeedback() {
+                if (borderEl) { borderEl.remove(); borderEl = null; }
+                if (vibTimer) { clearInterval(vibTimer); vibTimer = null; }
+                if (progTimer) { clearInterval(progTimer); progTimer = null; }
+                if (navigator.vibrate) navigator.vibrate(0);
+            }
+
+            player.onplay = () => {
+                if (bubble) {
+                    bubble.classList.add('active');
+                    const textEl = bubble.querySelector('.chat-bubble-text');
+                    const karaokeEl = bubble.querySelector('.chat-bubble-karaoke');
+                    const progEl = bubble.querySelector('.chat-bubble-progress');
+                    if (textEl) textEl.classList.add('hidden');
+                    if (karaokeEl) karaokeEl.classList.remove('hidden');
+                    if (progEl) progEl.classList.remove('hidden');
+
+                    // 카라오케
+                    const spoken = bubble.querySelector('.karaoke-spoken');
+                    const unspoken = bubble.querySelector('.karaoke-unspoken');
+                    const progBar = bubble.querySelector('.chat-bubble-progress-bar');
+
+                    function updateKaraoke() {
+                        if (!player || player.paused || player.ended) return;
+                        const p = player.duration > 0 ? player.currentTime / player.duration : 0;
+                        const off = Math.floor(p * msg.text.length);
+                        if (spoken) spoken.textContent = msg.text.substring(0, off);
+                        if (unspoken) unspoken.textContent = msg.text.substring(off);
+                        if (progBar) progBar.style.width = (p * 100) + '%';
+                        karaokeRafId = requestAnimationFrame(updateKaraoke);
+                    }
+                    karaokeRafId = requestAnimationFrame(updateKaraoke);
+                }
+                startFeedback();
+                startAudioLevelMonitor(player);
+                startSentenceVibration(msg.text);
+            };
+
+            player.onended = () => {
+                stopFeedback();
+                stopAudioLevelMonitor();
+                if (karaokeRafId) { cancelAnimationFrame(karaokeRafId); karaokeRafId = null; }
+                stopSentenceVibration();
+                if (bubble) {
+                    bubble.classList.remove('active');
+                    const textEl = bubble.querySelector('.chat-bubble-text');
+                    const karaokeEl = bubble.querySelector('.chat-bubble-karaoke');
+                    const progEl = bubble.querySelector('.chat-bubble-progress');
+                    if (textEl) textEl.classList.remove('hidden');
+                    if (karaokeEl) karaokeEl.classList.add('hidden');
+                    if (progEl) progEl.classList.add('hidden');
+                }
+                activeBubbleId = null;
+                if (hasNativeBridge) NativeBridge.vibrate(50);
+                else if (navigator.vibrate) navigator.vibrate([50, 100, 50]);
+                setTimeout(() => { document.getElementById('ttsText').focus(); }, 300);
+            };
+
+            player.onpause = () => {
+                if (!player.ended) {
+                    stopFeedback();
+                    stopAudioLevelMonitor();
+                    if (karaokeRafId) { cancelAnimationFrame(karaokeRafId); karaokeRafId = null; }
+                    stopSentenceVibration();
+                }
+            };
+
+            checkVolumeBeforePlay();
+            player.play();
+        } else {
+            if (bubble) {
+                bubble.style.background = '#BA1A1A';
+                bubble.querySelector('.chat-bubble-bottom').innerHTML = '<span style="font-size:12px;">실패 — 탭하여 재시도</span>';
+                bubble.onclick = () => { bubble.style.background = ''; bubble.onclick = null; synthesizeForMessage(msg); };
+            }
+        }
+    } catch (e) {
+        if (bubble) bubble.style.background = '#BA1A1A';
+    }
+    btn.disabled = false;
+}
+
+function replayMessage(msgId) {
+    const msg = chatMessages.find(m => m.id === msgId);
+    if (!msg) return;
+    const bubble = document.getElementById('bubble-' + msgId);
+    if (bubble) bubble.classList.add('active');
+    synthesizeForMessage(msg);
+}
 
 // ─── 초기화 ───
 window.addEventListener('DOMContentLoaded', () => {
@@ -884,6 +1230,14 @@ window.addEventListener('DOMContentLoaded', () => {
                 applyVolume();
             }
         }, 1000);
+    }
+
+    // Enter 키로 메시지 전송
+    const ttsInput = document.getElementById('ttsText');
+    if (ttsInput) {
+        ttsInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+        });
     }
 
     // 키보드 올라올 때 입력란 자동 스크롤
@@ -1015,6 +1369,7 @@ async function showHome() {
     loadVoices();
     loadVoiceCategories();
     loadPhrases();
+    renderAllChatBubbles();
 }
 
 // ─── 음성 목록 ───
@@ -1245,15 +1600,15 @@ function renderPhrases() {
 
 async function speakPhrase(id, text) {
     document.getElementById('ttsText').value = text;
-    document.getElementById('charCount').textContent = text.length;
     switchTab('tts');
-    // 사용 횟수 증가
     api('/api/v1/phrases/' + id + '/use', { method: 'POST' });
-    synthesize();
+    sendMessage();
 }
 
 async function addToFavorite() {
-    const text = document.getElementById('ttsText').value.trim();
+    let text = document.getElementById('ttsText').value.trim();
+    // 입력창이 비어있으면 마지막 메시지에서 가져옴
+    if (!text && chatMessages.length > 0) text = chatMessages[chatMessages.length - 1].text;
     if (!text) return;
     try {
         const res = await api('/api/v1/phrases', {
