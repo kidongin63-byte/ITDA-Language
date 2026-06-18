@@ -1600,7 +1600,7 @@ function renderRoomsBar() {
     addBtn.className = 'room-add-btn';
     addBtn.textContent = '+ 새 대화';
     addBtn.onclick = promptNewRoom;
-    bar.appendChild(addBtn);
+    bar.insertBefore(addBtn, bar.firstChild);
 }
 
 // ─── 음성 선택 빠른 모달 ───
@@ -1942,6 +1942,11 @@ window.addEventListener('DOMContentLoaded', () => {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/static/sw.js');
     }
+
+    // APK 설치 배너 차단
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+    });
 
     // 네이티브 브릿지: 실시간 기기 볼륨 동기화 (1초마다)
     if (hasNativeBridge) {

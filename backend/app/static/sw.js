@@ -1,4 +1,4 @@
-const CACHE_NAME = 'itda-v19';
+const CACHE_NAME = 'itda-v20';
 const urlsToCache = ['/app', '/static/itda_logo.png', '/static/manifest.json', '/static/icon4-192.png', '/static/icon4-512.png'];
 
 self.addEventListener('install', e => {
