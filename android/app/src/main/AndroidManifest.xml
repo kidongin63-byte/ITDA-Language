@@ -18,19 +18,19 @@
 
         <activity
             android:name=".ui.MainActivity"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/Theme.ITDALanguage.Splash"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ui.webview.WebViewActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ITDALanguage"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".ui.webview.WebViewActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ITDALanguage"
-            android:windowSoftInputMode="adjustResize" />
     </application>
 </manifest>
