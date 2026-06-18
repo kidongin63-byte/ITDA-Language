@@ -910,6 +910,32 @@
         }
         .filter-chip.active { background: #E76F51; color: #FFF; border-color: #E76F51; }
 
+        /* ─── 말풍선 메뉴 ─── */
+        .bubble-menu {
+            position: fixed;
+            z-index: 200;
+            background: #FFF;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            overflow: hidden;
+            display: flex;
+            border: 1px solid #EAD6D1;
+        }
+        .bubble-menu button {
+            padding: 12px 20px;
+            border: none;
+            background: #FFF;
+            font-size: 15px;
+            cursor: pointer;
+            color: #2E2520;
+            white-space: nowrap;
+        }
+        .bubble-menu button:first-child {
+            border-right: 1px solid #EAD6D1;
+            color: #BA1A1A;
+        }
+        .bubble-menu button:active { background: #FFF1ED; }
+
         /* ─── 사용 설명서 ─── */
         .guide-overlay {
             position: fixed;
@@ -1674,8 +1700,90 @@ function renderChatBubble(msg, isActive) {
             '<button class="chat-replay-btn" onclick="replayMessage(' + msg.id + ')">▶</button>' +
         '</div>';
 
+    // 길게 누르기 → 삭제/저장 메뉴
+    let holdTimer = null;
+    b.addEventListener('touchstart', (e) => {
+        holdTimer = setTimeout(() => { showBubbleMenu(msg.id, msg.text, e); }, 600);
+    });
+    b.addEventListener('touchend', () => clearTimeout(holdTimer));
+    b.addEventListener('touchmove', () => clearTimeout(holdTimer));
+
     h.appendChild(b);
     return b;
+}
+
+// ─── 말풍선 메뉴 (삭제/저장) ───
+function showBubbleMenu(msgId, text, event) {
+    // 기존 메뉴 제거
+    const old = document.getElementById('bubbleMenu');
+    if (old) old.remove();
+
+    const menu = document.createElement('div');
+    menu.id = 'bubbleMenu';
+    menu.className = 'bubble-menu';
+
+    menu.innerHTML =
+        '<button onclick="deleteBubbleMsg(' + msgId + ')">🗑️ 삭제</button>' +
+        '<button onclick="saveBubbleMsg(' + msgId + ')">💾 저장</button>';
+
+    document.body.appendChild(menu);
+
+    // 위치 조정
+    const bubble = document.getElementById('bubble-' + msgId);
+    if (bubble) {
+        const rect = bubble.getBoundingClientRect();
+        menu.style.top = Math.max(10, rect.top - 50) + 'px';
+        menu.style.right = '20px';
+    }
+
+    // 바깥 클릭하면 닫기
+    setTimeout(() => {
+        document.addEventListener('touchstart', closeBubbleMenu);
+        document.addEventListener('click', closeBubbleMenu);
+    }, 100);
+
+    if (navigator.vibrate) navigator.vibrate(30);
+}
+
+function closeBubbleMenu() {
+    const m = document.getElementById('bubbleMenu');
+    if (m) m.remove();
+    document.removeEventListener('touchstart', closeBubbleMenu);
+    document.removeEventListener('click', closeBubbleMenu);
+}
+
+function deleteBubbleMsg(msgId) {
+    closeBubbleMenu();
+    const room = getCurrentRoom();
+    if (room) {
+        room.messages = room.messages.filter(m => m.id !== msgId);
+        saveRooms();
+        renderAllChatBubbles();
+    }
+}
+
+async function saveBubbleMsg(msgId) {
+    closeBubbleMenu();
+    const msg = getChatMessages().find(m => m.id === msgId);
+    if (!msg) return;
+    try {
+        const res = await api('/api/v1/phrases', {
+            method: 'POST',
+            body: JSON.stringify({ phrase_text: msg.text, category: 'saved' })
+        });
+        if (res.ok) {
+            if (navigator.vibrate) navigator.vibrate(50);
+            // 저장 완료 표시
+            const bubble = document.getElementById('bubble-' + msgId);
+            if (bubble) {
+                const badge = document.createElement('div');
+                badge.style.cssText = 'font-size:11px;color:#006A63;text-align:right;margin-top:4px;';
+                badge.textContent = '💾 저장됨';
+                bubble.appendChild(badge);
+                setTimeout(() => badge.remove(), 2000);
+            }
+        }
+    } catch (e) {}
 }
 
 function sendMessage() {
@@ -2177,7 +2285,8 @@ const categoryNames = {
     emergency: '긴급',
     medical: '의료',
     order: '주문',
-    custom: '사용자'
+    custom: '사용자',
+    saved: '💾 저장됨'
 };
 
 async function loadPhrases() {
