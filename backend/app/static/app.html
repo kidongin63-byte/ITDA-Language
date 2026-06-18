@@ -97,6 +97,19 @@
             background: none; border: none;
             font-size: 14px; color: #78716C; cursor: pointer;
         }
+        .top-icon-btn {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #F5EBE8;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+        }
+        .top-icon-btn:active { background: #EAD6D1; }
 
         /* 탭 */
         .tabs {
@@ -538,6 +551,77 @@
         .audio-level-text.ok { color: #006A63; }
         .audio-level-text.muted { color: #BA1A1A; }
 
+        /* ─── 대화방 목록 ─── */
+        .rooms-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: #FFF;
+            border-bottom: 1px solid #EAD6D1;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .rooms-bar::-webkit-scrollbar { display: none; }
+        .room-chip {
+            white-space: nowrap;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1.5px solid #DEC0B9;
+            background: #FFF;
+            font-size: 13px;
+            font-weight: 500;
+            color: #57423D;
+            cursor: pointer;
+            transition: all 0.15s;
+            position: relative;
+        }
+        .room-chip.active {
+            background: #E76F51;
+            color: #FFF;
+            border-color: #E76F51;
+        }
+        .room-chip .room-dot {
+            display: inline-block;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #006A63;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+        .room-chip.active .room-dot { background: #FFF; }
+        .room-add-btn {
+            white-space: nowrap;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1.5px dashed #DEC0B9;
+            background: none;
+            font-size: 13px;
+            color: #8A716C;
+            cursor: pointer;
+        }
+        .room-add-btn:active { background: #FFF1ED; }
+
+        /* ─── 상단 음성 칩 ─── */
+        .voice-chip {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 12px;
+            border-radius: 16px;
+            background: #FFF1ED;
+            border: 1px solid #EAD6D1;
+            font-size: 12px;
+            color: #57423D;
+            cursor: pointer;
+            white-space: nowrap;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .voice-chip:active { background: #EAD6D1; }
+        .voice-chip-arrow { font-size: 10px; color: #8A716C; }
+
         /* ─── 채팅형 UI ─── */
         .chat-history {
             flex: 1;
@@ -560,62 +644,69 @@
         .chat-bubble {
             align-self: flex-end;
             max-width: 85%;
-            background: #E76F51;
-            color: #FFF;
+            background: #FFF;
+            color: #2E2520;
             border-radius: 16px 16px 4px 16px;
-            padding: 10px 14px;
+            padding: 12px 16px;
             word-break: break-word;
             position: relative;
             animation: bubbleIn 0.2s ease-out;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            border: 1px solid #EAD6D1;
         }
         @keyframes bubbleIn {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .chat-bubble.active {
-            background: #C4573B;
-            box-shadow: 0 2px 12px rgba(231,111,81,0.3);
+            border-color: #E76F51;
+            box-shadow: 0 2px 12px rgba(231,111,81,0.15);
         }
         .chat-bubble-text {
             font-size: 16px;
             line-height: 1.6;
             white-space: pre-wrap;
+            color: #2E2520;
         }
         .chat-bubble-bottom {
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 8px;
-            margin-top: 6px;
+            gap: 10px;
+            margin-top: 8px;
         }
         .chat-replay-btn {
-            background: rgba(255,255,255,0.25);
+            background: #E76F51;
             border: none;
             border-radius: 50%;
-            width: 30px; height: 30px;
+            width: 32px; height: 32px;
             font-size: 13px;
             cursor: pointer;
             color: #FFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
         }
-        .chat-replay-btn:active { background: rgba(255,255,255,0.4); }
+        .chat-replay-btn:active { background: #A33D23; }
         .chat-bubble-time {
             font-size: 11px;
-            color: rgba(255,255,255,0.6);
+            color: #8A716C;
         }
         /* 말풍선 내 카라오케 */
-        .chat-bubble .karaoke-spoken { color: #FFF; font-weight: 700; }
-        .chat-bubble .karaoke-unspoken { color: rgba(255,255,255,0.35); }
-        .chat-bubble .karaoke-cursor { background: #FFF; }
+        .chat-bubble .karaoke-spoken { color: #2E2520; font-weight: 700; }
+        .chat-bubble .karaoke-unspoken { color: rgba(46,37,32,0.25); }
+        .chat-bubble .karaoke-cursor { background: #E76F51; }
         .chat-bubble-progress {
-            margin-top: 6px;
+            margin-top: 8px;
             height: 4px;
-            background: rgba(255,255,255,0.2);
+            background: #EAD6D1;
             border-radius: 2px;
             overflow: hidden;
         }
         .chat-bubble-progress-bar {
             height: 100%;
-            background: #FFF;
+            background: #E76F51;
             border-radius: 2px;
             transition: width 0.2s linear;
         }
@@ -878,13 +969,17 @@
 <div id="homePage" class="page home-page hidden">
     <!-- 상단 바 -->
     <div class="top-bar">
-        <div style="display:flex;align-items:center;gap:8px;">
+        <div style="display:flex;align-items:center;gap:6px;">
             <img src="/static/itda_logo.png" alt="로고" class="logo-small">
             <span class="title">잇다</span>
         </div>
-        <div style="display:flex;align-items:center;gap:4px;">
-            <button class="user-btn" onclick="openSettings()">⚙️</button>
-            <button class="user-btn" onclick="logout()">로그아웃</button>
+        <div style="display:flex;align-items:center;gap:8px;">
+            <div class="voice-chip" onclick="openVoiceModal()" id="voiceChip" title="음성 변경">
+                <span id="voiceChipName">선희</span>
+                <span class="voice-chip-arrow">▼</span>
+            </div>
+            <button class="top-icon-btn" onclick="openSettings()" title="설정">⚙️</button>
+            <button class="top-icon-btn" onclick="confirmLogout()" title="로그아웃">👤</button>
         </div>
     </div>
 
@@ -896,6 +991,9 @@
 
     <!-- TTS 탭 (채팅형) -->
     <div id="ttsTab" class="tab-content" style="display:flex;flex-direction:column;padding:0;overflow:hidden;">
+        <!-- 대화방 목록 -->
+        <div class="rooms-bar" id="roomsBar"></div>
+
         <!-- 채팅 히스토리 -->
         <div id="chatHistory" class="chat-history">
             <div id="chatEmpty" class="chat-empty">텍스트를 입력하면<br>음성으로 변환됩니다 🔊</div>
@@ -1007,13 +1105,130 @@ let currentCategory = 'all';
 // ─── 네이티브 브릿지 감지 ───
 const hasNativeBridge = typeof window.NativeBridge !== 'undefined';
 
-// ─── 채팅 메시지 관리 ───
-let chatMessages = JSON.parse(localStorage.getItem('itda_chat') || '[]');
+// ─── 대화방 관리 ───
+let chatRooms = JSON.parse(localStorage.getItem('itda_rooms') || 'null');
+let currentRoomId = null;
 let activeBubbleId = null;
 
+// 최초 또는 마이그레이션
+function initRooms() {
+    if (!chatRooms) {
+        // 기존 단일 메시지 → 첫 대화방으로 마이그레이션
+        const oldMsgs = JSON.parse(localStorage.getItem('itda_chat') || '[]');
+        chatRooms = [{
+            id: Date.now(),
+            name: '대화 1',
+            messages: oldMsgs,
+            createdAt: new Date().toISOString()
+        }];
+        localStorage.removeItem('itda_chat');
+        saveRooms();
+    }
+    if (chatRooms.length === 0) {
+        createRoom('대화 1');
+    }
+    currentRoomId = chatRooms[chatRooms.length - 1].id;
+}
+
+function saveRooms() {
+    // 각 대화방 최대 100개 메시지
+    chatRooms.forEach(r => { if (r.messages.length > 100) r.messages = r.messages.slice(-100); });
+    localStorage.setItem('itda_rooms', JSON.stringify(chatRooms));
+}
+
+function getCurrentRoom() {
+    return chatRooms.find(r => r.id === currentRoomId) || chatRooms[0];
+}
+
+// chatMessages 호환성 (기존 코드에서 참조)
+function getChatMessages() {
+    const room = getCurrentRoom();
+    return room ? room.messages : [];
+}
+
 function saveChatMessages() {
-    if (chatMessages.length > 100) chatMessages = chatMessages.slice(-100);
-    localStorage.setItem('itda_chat', JSON.stringify(chatMessages));
+    saveRooms();
+}
+
+function createRoom(name) {
+    const room = { id: Date.now(), name: name, messages: [], createdAt: new Date().toISOString() };
+    chatRooms.push(room);
+    currentRoomId = room.id;
+    saveRooms();
+    renderRoomsBar();
+    renderAllChatBubbles();
+    return room;
+}
+
+function switchRoom(roomId) {
+    currentRoomId = roomId;
+    renderRoomsBar();
+    renderAllChatBubbles();
+}
+
+function deleteRoom(roomId) {
+    if (chatRooms.length <= 1) return; // 최소 1개 유지
+    if (!confirm('이 대화방을 삭제하시겠습니까?')) return;
+    chatRooms = chatRooms.filter(r => r.id !== roomId);
+    if (currentRoomId === roomId) currentRoomId = chatRooms[chatRooms.length - 1].id;
+    saveRooms();
+    renderRoomsBar();
+    renderAllChatBubbles();
+}
+
+function promptNewRoom() {
+    const name = prompt('대화방 이름을 입력하세요:', '대화 ' + (chatRooms.length + 1));
+    if (name && name.trim()) {
+        createRoom(name.trim());
+    }
+}
+
+function renderRoomsBar() {
+    const bar = document.getElementById('roomsBar');
+    if (!bar) return;
+    bar.innerHTML = '';
+
+    chatRooms.forEach(room => {
+        const chip = document.createElement('button');
+        chip.className = 'room-chip' + (room.id === currentRoomId ? ' active' : '');
+        chip.innerHTML = '<span class="room-dot"></span>' + escapeHtml(room.name);
+        chip.onclick = () => switchRoom(room.id);
+        // 길게 누르면 삭제
+        let holdTimer = null;
+        chip.addEventListener('touchstart', () => { holdTimer = setTimeout(() => deleteRoom(room.id), 700); });
+        chip.addEventListener('touchend', () => { clearTimeout(holdTimer); });
+        chip.addEventListener('touchmove', () => { clearTimeout(holdTimer); });
+        bar.appendChild(chip);
+    });
+
+    const addBtn = document.createElement('button');
+    addBtn.className = 'room-add-btn';
+    addBtn.textContent = '+ 새 대화';
+    addBtn.onclick = promptNewRoom;
+    bar.appendChild(addBtn);
+}
+
+// ─── 음성 선택 빠른 모달 ───
+function openVoiceModal() {
+    // 설정 모달 열고 음성 선택으로 스크롤
+    openSettings();
+    setTimeout(() => {
+        const sel = document.getElementById('voiceSelect');
+        if (sel) sel.focus();
+    }, 300);
+}
+
+function updateVoiceChip() {
+    const sel = document.getElementById('voiceSelect');
+    const chip = document.getElementById('voiceChipName');
+    if (sel && chip) {
+        const opt = sel.options[sel.selectedIndex];
+        if (opt) {
+            // 이름에서 짧게 추출 (첫 단어)
+            const name = opt.textContent.split(' ')[0].split('-')[0];
+            chip.textContent = name || '선택';
+        }
+    }
 }
 
 function escapeHtml(text) {
@@ -1032,9 +1247,10 @@ function renderAllChatBubbles() {
     if (!h) return;
     h.querySelectorAll('.chat-bubble').forEach(b => b.remove());
     const empty = document.getElementById('chatEmpty');
-    if (chatMessages.length === 0) { if (empty) empty.classList.remove('hidden'); return; }
+    const msgs = getChatMessages();
+    if (msgs.length === 0) { if (empty) empty.classList.remove('hidden'); return; }
     if (empty) empty.classList.add('hidden');
-    chatMessages.forEach(msg => renderChatBubble(msg));
+    msgs.forEach(msg => renderChatBubble(msg));
     scrollChatToBottom();
 }
 
@@ -1071,8 +1287,9 @@ function sendMessage() {
     if (!text) return;
 
     const msg = { id: Date.now(), text: text, timestamp: new Date().toISOString() };
-    chatMessages.push(msg);
-    saveChatMessages();
+    const room = getCurrentRoom();
+    if (room) room.messages.push(msg);
+    saveRooms();
 
     const bubble = renderChatBubble(msg, true);
     input.value = '';
@@ -1202,7 +1419,7 @@ async function synthesizeForMessage(msg) {
 }
 
 function replayMessage(msgId) {
-    const msg = chatMessages.find(m => m.id === msgId);
+    const msg = getChatMessages().find(m => m.id === msgId);
     if (!msg) return;
     const bubble = document.getElementById('bubble-' + msgId);
     if (bubble) bubble.classList.add('active');
@@ -1353,6 +1570,10 @@ async function handleAuth() {
     btn.textContent = isLoginMode ? '로그인' : '회원가입';
 }
 
+function confirmLogout() {
+    if (confirm('로그아웃 하시겠습니까?')) logout();
+}
+
 function logout() {
     token = '';
     refreshToken = '';
@@ -1366,6 +1587,8 @@ function logout() {
 async function showHome() {
     document.getElementById('authPage').classList.add('hidden');
     document.getElementById('homePage').classList.remove('hidden');
+    initRooms();
+    renderRoomsBar();
     loadVoices();
     loadVoiceCategories();
     loadPhrases();
@@ -1412,6 +1635,8 @@ async function loadVoices() {
                 });
                 sel.appendChild(grp);
             });
+            sel.addEventListener('change', updateVoiceChip);
+            updateVoiceChip();
         }
     } catch (e) {}
 }
@@ -1608,7 +1833,8 @@ async function speakPhrase(id, text) {
 async function addToFavorite() {
     let text = document.getElementById('ttsText').value.trim();
     // 입력창이 비어있으면 마지막 메시지에서 가져옴
-    if (!text && chatMessages.length > 0) text = chatMessages[chatMessages.length - 1].text;
+    const msgs = getChatMessages();
+    if (!text && msgs.length > 0) text = msgs[msgs.length - 1].text;
     if (!text) return;
     try {
         const res = await api('/api/v1/phrases', {
