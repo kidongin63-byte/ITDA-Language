@@ -538,6 +538,142 @@
         .audio-level-text.ok { color: #006A63; }
         .audio-level-text.muted { color: #BA1A1A; }
 
+        /* ─── 이퀄라이저 캔버스 ─── */
+        .eq-canvas-wrap {
+            width: 100%;
+            height: 60px;
+            margin-top: 8px;
+            display: flex;
+            justify-content: center;
+        }
+        #eqCanvas {
+            width: 100%;
+            max-width: 320px;
+            height: 60px;
+        }
+
+        /* ─── 카라오케 하이라이트 ─── */
+        .karaoke-container {
+            width: 100%;
+            min-height: 160px;
+            max-height: 300px;
+            padding: 16px;
+            border: 1.5px solid #E76F51;
+            border-radius: 16px;
+            font-size: 18px;
+            font-family: inherit;
+            background: #FFF;
+            color: #2E2520;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.8;
+            word-break: break-word;
+        }
+        .karaoke-spoken {
+            color: #2E2520;
+            font-weight: 500;
+        }
+        .karaoke-unspoken {
+            color: rgba(120, 113, 108, 0.35);
+        }
+        .karaoke-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1.2em;
+            background: #E76F51;
+            border-radius: 2px;
+            vertical-align: text-bottom;
+            margin: 0 1px;
+            animation: cursorPulse 0.8s ease-in-out infinite;
+        }
+        @keyframes cursorPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* ─── 온보딩 ─── */
+        .onboarding-page {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: #FFF9F6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+        }
+        .onboarding-logo { width: 120px; height: 120px; margin-bottom: 16px; }
+        .onboarding-title { font-size: 36px; font-weight: 900; color: #E76F51; margin-bottom: 8px; }
+        .onboarding-subtitle { font-size: 16px; color: #78716C; text-align: center; margin-bottom: 48px; line-height: 1.8; }
+
+        /* ─── 즐겨찾기 강화 ─── */
+        .phrase-delete {
+            font-size: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #BA1A1A;
+            padding: 4px 8px;
+        }
+        .phrase-cat-label {
+            font-size: 11px;
+            color: #78716C;
+            background: #F5EBE8;
+            padding: 2px 8px;
+            border-radius: 8px;
+            margin-right: 6px;
+        }
+        .phrase-add-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .phrase-add-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1.5px solid #DEC0B9;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+        }
+        .phrase-add-input:focus { border-color: #E76F51; }
+        .phrase-add-btn {
+            padding: 10px 16px;
+            background: #E76F51;
+            color: #FFF;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* ─── 음성 필터 ─── */
+        .voice-filters {
+            margin-bottom: 10px;
+        }
+        .filter-section { margin-bottom: 6px; }
+        .filter-label { font-size: 12px; color: #78716C; margin-bottom: 3px; }
+        .filter-chips {
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+        .filter-chip {
+            white-space: nowrap;
+            padding: 4px 10px;
+            border-radius: 14px;
+            border: 1.5px solid #DEC0B9;
+            background: #FFF;
+            font-size: 12px;
+            cursor: pointer;
+            color: #57423D;
+            transition: all 0.15s;
+        }
+        .filter-chip.active { background: #E76F51; color: #FFF; border-color: #E76F51; }
+
         /* iOS safe area */
         @supports (padding-top: env(safe-area-inset-top)) {
             .top-bar { padding-top: calc(12px + env(safe-area-inset-top)); }
@@ -545,6 +681,14 @@
     </style>
 </head>
 <body>
+
+<!-- ════════ 온보딩 ════════ -->
+<div id="onboardingPage" class="onboarding-page hidden">
+    <img src="/static/itda_logo.png" alt="잇다" class="onboarding-logo">
+    <div class="onboarding-title">잇다</div>
+    <div class="onboarding-subtitle">소리가 없어도,<br>우리는 이어집니다<br><br>텍스트를 음성으로 변환하여<br>소통을 도와드립니다</div>
+    <button class="btn-primary" style="max-width:300px;" onclick="dismissOnboarding()">시작하기</button>
+</div>
 
 <!-- ════════ 로그인 페이지 ════════ -->
 <div id="authPage" class="page auth-page">
@@ -621,12 +765,18 @@
     <!-- TTS 탭 -->
     <div id="ttsTab" class="tab-content">
         <div class="voice-select">
-            <div class="voice-label">음성 선택</div>
+            <div class="voice-label" style="display:flex;justify-content:space-between;align-items:center;">
+                음성 선택
+                <button class="filter-chip" onclick="toggleVoiceFilters()" id="filterToggleBtn" style="font-size:11px;">필터 ▼</button>
+            </div>
+            <div id="voiceFilters" class="voice-filters hidden"></div>
             <select id="voiceSelect"></select>
         </div>
 
         <textarea id="ttsText" class="tts-area" placeholder="여기에 텍스트를 입력하세요..." maxlength="1000"></textarea>
+        <div id="karaokeView" class="karaoke-container hidden"><span id="karaokeSpoken" class="karaoke-spoken"></span><span id="karaokeCursor" class="karaoke-cursor"></span><span id="karaokeUnspoken" class="karaoke-unspoken"></span></div>
         <div class="char-count"><span id="charCount">0</span>/1000</div>
+        <div class="eq-canvas-wrap hidden" id="eqCanvasWrap"><canvas id="eqCanvas"></canvas></div>
 
         <div id="speakerStatus" class="speaker-status"></div>
 
@@ -667,6 +817,10 @@
 
     <!-- 즐겨찾기 탭 -->
     <div id="phrasesTab" class="tab-content hidden">
+        <div class="phrase-add-bar">
+            <input type="text" id="newPhraseInput" class="phrase-add-input" placeholder="새 문구 입력...">
+            <button class="phrase-add-btn" onclick="addNewPhrase()">추가</button>
+        </div>
         <div class="phrase-categories" id="categoryBar"></div>
         <ul class="phrase-list" id="phraseList"></ul>
     </div>
@@ -859,6 +1013,7 @@ async function showHome() {
     document.getElementById('authPage').classList.add('hidden');
     document.getElementById('homePage').classList.remove('hidden');
     loadVoices();
+    loadVoiceCategories();
     loadPhrases();
 }
 
@@ -977,14 +1132,20 @@ async function synthesize() {
 
             player.onplay = () => {
                 status.className = 'play-status playing';
-                status.innerHTML = '<span class="eq-bars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span> 음성 재생 중...<div class="play-progress"><div id="progressBar" class="play-progress-bar" style="width:0%"></div></div>';
+                status.innerHTML = '음성 재생 중...<div class="play-progress"><div id="progressBar" class="play-progress-bar" style="width:0%"></div></div>';
                 status.classList.remove('hidden');
                 startAccessibilityFeedback();
                 startAudioLevelMonitor(player);
+                startEqualizer();
+                startKaraoke(text);
+                startSentenceVibration(text);
             };
             player.onended = () => {
                 stopAccessibilityFeedback();
                 stopAudioLevelMonitor();
+                stopEqualizer();
+                stopKaraoke();
+                stopSentenceVibration();
                 status.className = 'play-status done';
                 status.textContent = '✓ 재생 완료';
                 if (navigator.vibrate) navigator.vibrate([50, 100, 50]);
@@ -994,6 +1155,9 @@ async function synthesize() {
                 if (!player.ended) {
                     stopAccessibilityFeedback();
                     stopAudioLevelMonitor();
+                    stopEqualizer();
+                    stopKaraoke();
+                    stopSentenceVibration();
                     status.className = 'play-status done';
                     status.textContent = '⏸ 일시정지';
                 }
@@ -1061,9 +1225,11 @@ function renderPhrases() {
     }
     list.innerHTML = phrases.map(p => `
         <li class="phrase-item" onclick="speakPhrase('${p.id}', '${p.phrase_text.replace(/'/g, "\\'")}')">
+            <span class="phrase-cat-label">${categoryNames[p.category] || p.category}</span>
             <span class="phrase-text">${p.phrase_text}</span>
             <span class="phrase-count">${p.usage_count}회</span>
             <button class="phrase-play">▶</button>
+            <button class="phrase-delete" onclick="event.stopPropagation(); deletePhrase('${p.id}')">✕</button>
         </li>
     `).join('');
 }
@@ -1359,6 +1525,367 @@ function closeSettings(e) {
         document.getElementById('settingsModal').classList.add('hidden');
     }
 }
+
+// ════════════════════════════════════════════
+// Phase 1: 이퀄라이저 + 카라오케 + 문장 진동
+// ════════════════════════════════════════════
+
+// ─── 이퀄라이저 렌더러 (Canvas + 스프링 물리) ───
+class EqualizerRenderer {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.barCount = 8;
+        this.barWidth = 8;
+        this.gap = 5;
+        this.maxH = 48;
+        this.minH = 4;
+        this.levels = new Float32Array(this.barCount);
+        this.targets = new Float32Array(this.barCount);
+        this.velocities = new Float32Array(this.barCount);
+        this.rafId = null;
+        this.active = false;
+    }
+
+    start(analyserNode) {
+        this.analyser = analyserNode;
+        this.dataArray = new Uint8Array(analyserNode.frequencyBinCount);
+        this.active = true;
+        this._resize();
+        this._loop();
+    }
+
+    stop() {
+        this.active = false;
+        if (this.rafId) cancelAnimationFrame(this.rafId);
+        this.targets.fill(0);
+        // animate out
+        this._loop();
+        setTimeout(() => { if (this.rafId) cancelAnimationFrame(this.rafId); }, 500);
+    }
+
+    _resize() {
+        const dpr = window.devicePixelRatio || 1;
+        const w = this.canvas.clientWidth;
+        const h = this.canvas.clientHeight;
+        this.canvas.width = w * dpr;
+        this.canvas.height = h * dpr;
+        this.ctx.scale(dpr, dpr);
+        this.w = w;
+        this.h = h;
+    }
+
+    _loop() {
+        if (this.analyser && this.active) {
+            this.analyser.getByteFrequencyData(this.dataArray);
+            const binSize = Math.floor(this.dataArray.length / this.barCount);
+            for (let i = 0; i < this.barCount; i++) {
+                let sum = 0;
+                for (let j = 0; j < binSize; j++) sum += this.dataArray[i * binSize + j];
+                this.targets[i] = Math.min(1, (sum / binSize) / 180);
+            }
+        }
+
+        // 스프링 물리
+        const stiffness = 1500, dt = 1 / 60;
+        const damping = 0.5 * 2 * Math.sqrt(stiffness);
+        for (let i = 0; i < this.barCount; i++) {
+            const force = stiffness * (this.targets[i] - this.levels[i]);
+            this.velocities[i] += (force - damping * this.velocities[i]) * dt;
+            this.levels[i] = Math.max(0, Math.min(1, this.levels[i] + this.velocities[i] * dt));
+        }
+
+        this._draw();
+        this.rafId = requestAnimationFrame(() => this._loop());
+    }
+
+    _draw() {
+        const ctx = this.ctx;
+        ctx.clearRect(0, 0, this.w, this.h);
+        const totalW = this.barCount * this.barWidth + (this.barCount - 1) * this.gap;
+        const startX = (this.w - totalW) / 2;
+
+        for (let i = 0; i < this.barCount; i++) {
+            const lv = this.levels[i];
+            const h = this.minH + (this.maxH - this.minH) * lv;
+            const x = startX + i * (this.barWidth + this.gap);
+            const y = this.h - h - 4;
+            const alpha = this.active ? 0.6 + 0.4 * lv : 0.3;
+
+            ctx.fillStyle = `rgba(231, 111, 81, ${alpha})`;
+            ctx.beginPath();
+            ctx.roundRect(x, y, this.barWidth, h, 3);
+            ctx.fill();
+
+            // 글로우
+            if (this.active && lv > 0.1) {
+                ctx.fillStyle = `rgba(231, 111, 81, ${0.15 * lv})`;
+                ctx.beginPath();
+                ctx.roundRect(x - 2, this.h - 6, this.barWidth + 4, 4, 2);
+                ctx.fill();
+            }
+        }
+    }
+}
+
+let eqRenderer = null;
+
+function startEqualizer() {
+    const wrap = document.getElementById('eqCanvasWrap');
+    const canvas = document.getElementById('eqCanvas');
+    wrap.classList.remove('hidden');
+    if (!eqRenderer) eqRenderer = new EqualizerRenderer(canvas);
+    if (analyser) eqRenderer.start(analyser);
+}
+
+function stopEqualizer() {
+    if (eqRenderer) eqRenderer.stop();
+    setTimeout(() => {
+        document.getElementById('eqCanvasWrap').classList.add('hidden');
+    }, 600);
+}
+
+// ─── 카라오케 하이라이트 ───
+let karaokeRafId = null;
+let karaokeText = '';
+let lastScrollTime = 0;
+
+function startKaraoke(text) {
+    karaokeText = text;
+    document.getElementById('ttsText').classList.add('hidden');
+    const kv = document.getElementById('karaokeView');
+    kv.classList.remove('hidden');
+
+    const spokenEl = document.getElementById('karaokeSpoken');
+    const cursorEl = document.getElementById('karaokeCursor');
+    const unspokenEl = document.getElementById('karaokeUnspoken');
+    const player = document.getElementById('audioPlayer');
+
+    function update() {
+        if (!player || player.paused || player.ended) return;
+        const progress = player.duration > 0 ? player.currentTime / player.duration : 0;
+        const offset = Math.floor(progress * text.length);
+
+        spokenEl.textContent = text.substring(0, offset);
+        unspokenEl.textContent = text.substring(offset);
+
+        // 자동 스크롤 (500ms 쓰로틀)
+        const now = Date.now();
+        if (now - lastScrollTime > 500) {
+            cursorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            lastScrollTime = now;
+        }
+
+        karaokeRafId = requestAnimationFrame(update);
+    }
+    karaokeRafId = requestAnimationFrame(update);
+}
+
+function stopKaraoke() {
+    if (karaokeRafId) cancelAnimationFrame(karaokeRafId);
+    karaokeRafId = null;
+    document.getElementById('karaokeView').classList.add('hidden');
+    document.getElementById('ttsText').classList.remove('hidden');
+}
+
+// ─── 문장 펄스 진동 ───
+let sentenceBoundaries = [];
+let lastSentenceIdx = -1;
+let sentenceTimer = null;
+
+function computeSentenceBoundaries(text) {
+    const ends = [];
+    for (let i = 0; i < text.length; i++) {
+        if ('.!?\u3002\n'.includes(text[i])) {
+            ends.push((i + 1) / text.length);
+        }
+    }
+    if (ends.length === 0 || ends[ends.length - 1] < 0.99) ends.push(1.0);
+    return ends;
+}
+
+function startSentenceVibration(text) {
+    sentenceBoundaries = computeSentenceBoundaries(text);
+    lastSentenceIdx = -1;
+    const player = document.getElementById('audioPlayer');
+    sentenceTimer = setInterval(() => {
+        if (!player || player.paused || player.ended || player.duration === 0) return;
+        const progress = player.currentTime / player.duration;
+        let idx = sentenceBoundaries.findIndex(b => b > progress);
+        if (idx === -1) idx = sentenceBoundaries.length - 1;
+        if (idx > 0 && idx !== lastSentenceIdx) {
+            lastSentenceIdx = idx;
+            if (hasNativeBridge) NativeBridge.vibrate(30);
+            else if (navigator.vibrate) navigator.vibrate(30);
+        }
+    }, 100);
+}
+
+function stopSentenceVibration() {
+    if (sentenceTimer) { clearInterval(sentenceTimer); sentenceTimer = null; }
+    lastSentenceIdx = -1;
+}
+
+// ════════════════════════════════════════════
+// Phase 2: 자동 줄바꿈 + 즐겨찾기 + 음성 필터
+// ════════════════════════════════════════════
+
+// ─── 자동 줄바꿈 ───
+document.addEventListener('DOMContentLoaded', () => {
+    const ta = document.getElementById('ttsText');
+    if (ta) {
+        ta.addEventListener('input', e => {
+            const val = ta.value;
+            document.getElementById('charCount').textContent = val.length;
+            if (e.inputType === 'insertText' && val.length > 0) {
+                const last = val[val.length - 1];
+                if ('.!?\u3002'.includes(last) && !val.endsWith('\n')) {
+                    ta.value = val + '\n';
+                    document.getElementById('charCount').textContent = ta.value.length;
+                    ta.selectionStart = ta.selectionEnd = ta.value.length;
+                }
+            }
+        });
+    }
+});
+
+// ─── 즐겨찾기 삭제 + 새 문구 + 카테고리 라벨 ───
+async function deletePhrase(id) {
+    if (!confirm('이 문구를 삭제하시겠습니까?')) return;
+    await api('/api/v1/phrases/' + id, { method: 'DELETE' });
+    loadPhrases();
+}
+
+async function addNewPhrase() {
+    const input = document.getElementById('newPhraseInput');
+    const text = input.value.trim();
+    if (!text) return;
+    const cat = currentCategory === 'all' ? 'custom' : currentCategory;
+    const res = await api('/api/v1/phrases', {
+        method: 'POST',
+        body: JSON.stringify({ phrase_text: text, category: cat })
+    });
+    if (res.ok) { input.value = ''; loadPhrases(); }
+}
+
+// ─── 음성 필터 ───
+let voiceCategories = null;
+let activeFilters = { gender: null, age_group: null, region: null, tone: null };
+
+function toggleVoiceFilters() {
+    const el = document.getElementById('voiceFilters');
+    const btn = document.getElementById('filterToggleBtn');
+    el.classList.toggle('hidden');
+    btn.textContent = el.classList.contains('hidden') ? '필터 ▼' : '필터 ▲';
+}
+
+async function loadVoiceCategories() {
+    try {
+        const res = await fetch(API + '/api/v1/voices/categories');
+        if (res.ok) {
+            voiceCategories = await res.json();
+            renderVoiceFilters();
+        }
+    } catch (e) {}
+}
+
+function renderVoiceFilters() {
+    if (!voiceCategories) return;
+    const container = document.getElementById('voiceFilters');
+    const labels = { gender: '성별', age_group: '연령대', region: '지역', tone: '톤' };
+    container.innerHTML = '';
+
+    Object.entries(labels).forEach(([key, label]) => {
+        const cats = voiceCategories[key + 's'] || voiceCategories[key] || {};
+        if (Object.keys(cats).length === 0) return;
+
+        const section = document.createElement('div');
+        section.className = 'filter-section';
+        section.innerHTML = '<div class="filter-label">' + label + '</div>';
+        const chips = document.createElement('div');
+        chips.className = 'filter-chips';
+
+        // 전체 칩
+        const allChip = document.createElement('button');
+        allChip.className = 'filter-chip' + (!activeFilters[key] ? ' active' : '');
+        allChip.textContent = '전체';
+        allChip.onclick = () => { activeFilters[key] = null; renderVoiceFilters(); loadFilteredVoices(); };
+        chips.appendChild(allChip);
+
+        Object.entries(cats).forEach(([code, name]) => {
+            const chip = document.createElement('button');
+            chip.className = 'filter-chip' + (activeFilters[key] === code ? ' active' : '');
+            chip.textContent = name;
+            chip.onclick = () => {
+                activeFilters[key] = activeFilters[key] === code ? null : code;
+                renderVoiceFilters();
+                loadFilteredVoices();
+            };
+            chips.appendChild(chip);
+        });
+
+        section.appendChild(chips);
+        container.appendChild(section);
+    });
+}
+
+async function loadFilteredVoices() {
+    const params = new URLSearchParams();
+    Object.entries(activeFilters).forEach(([k, v]) => { if (v) params.set(k, v); });
+    try {
+        const res = await fetch(API + '/api/v1/voices/personas?' + params.toString());
+        if (res.ok) {
+            personas = await res.json();
+            rebuildVoiceSelect();
+        }
+    } catch (e) {}
+}
+
+function rebuildVoiceSelect() {
+    const sel = document.getElementById('voiceSelect');
+    sel.innerHTML = '';
+    const langGroups = {
+        'ko-KR': '🇰🇷 한국어', 'en-US': '🇺🇸 영어', 'ja-JP': '🇯🇵 일본어',
+        'zh-CN': '🇨🇳 중국어', 'vi-VN': '🇻🇳 베트남어', 'es-ES': '🇪🇸 스페인어',
+        'mn-MN': '🇲🇳 몽골어', 'hi-IN': '🇮🇳 힌디어', 'fr-FR': '🇫🇷 프랑스어',
+    };
+    const grouped = {};
+    personas.forEach(p => {
+        const code = p.clova_speaker;
+        const prefix = code.includes('Multilingual') ? 'ko-KR' : code.split('-').slice(0, 2).join('-');
+        if (!grouped[prefix]) grouped[prefix] = [];
+        grouped[prefix].push(p);
+    });
+    Object.entries(langGroups).forEach(([prefix, label]) => {
+        const voices = grouped[prefix];
+        if (!voices) return;
+        const grp = document.createElement('optgroup');
+        grp.label = label;
+        voices.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.clova_speaker;
+            opt.textContent = p.display_name;
+            grp.appendChild(opt);
+        });
+        sel.appendChild(grp);
+    });
+}
+
+// ════════════════════════════════════════════
+// Phase 3: 온보딩
+// ════════════════════════════════════════════
+
+function dismissOnboarding() {
+    localStorage.setItem('itda_onboarded', '1');
+    document.getElementById('onboardingPage').classList.add('hidden');
+}
+
+// 온보딩 체크 (DOMContentLoaded)
+document.addEventListener('DOMContentLoaded', () => {
+    if (!localStorage.getItem('itda_onboarded')) {
+        document.getElementById('onboardingPage').classList.remove('hidden');
+    }
+});
 </script>
 </body>
 </html>
