@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,7 +10,9 @@ from app.core.auth import (
     decode_token,
     get_current_user,
 )
+from app.core.crypto import encrypt_pii
 from app.core.database import get_db
+from app.core.rate_limit import check_login_rate_limit, check_register_rate_limit
 from app.models.user import User
 from app.models.user_preference import UserPreference
 from app.schemas.user import (
@@ -25,7 +27,10 @@ router = APIRouter()
 
 
 @router.post("/register", response_model=TokenResponse, status_code=201)
-async def register(body: UserRegisterRequest, db: AsyncSession = Depends(get_db)):
+async def register(body: UserRegisterRequest, request: Request, db: AsyncSession = Depends(get_db)):
+    client_ip = request.client.host if request.client else "unknown"
+    check_register_rate_limit(client_ip)
+
     # 이메일 중복 확인
     existing = await db.execute(select(User).where(User.email == body.email))
     if existing.scalar_one_or_none():
@@ -37,23 +42,16 @@ async def register(body: UserRegisterRequest, db: AsyncSession = Depends(get_db)
         if existing_phone.scalar_one_or_none():
             raise HTTPException(status_code=409, detail="이미 등록된 전화번호입니다")
 
-    # 주민번호 앞자리 + 이름 조합 중복 확인 (동일인 재가입 방지)
-    if body.birth_id and body.nickname:
-        from sqlalchemy import and_
-        existing_person = await db.execute(
-            select(User).where(
-                and_(User.birth_id == body.birth_id, User.nickname == body.nickname)
-            )
-        )
-        if existing_person.scalar_one_or_none():
-            raise HTTPException(status_code=409, detail="이미 가입된 회원입니다")
+    # birth_id는 암호화 저장하므로 평문 동등비교가 불가.
+    # 동일인 재가입 방지는 이메일·전화번호 유니크 제약으로 처리한다.
 
     user = User(
         email=body.email,
         nickname=body.nickname,
         phone=body.phone or None,
         gender=body.gender or None,
-        birth_id=body.birth_id or None,
+        # 생년월일은 암호화하여 저장 (평문 미보관)
+        birth_id=encrypt_pii(body.birth_id) if body.birth_id else None,
         hashed_password=hash_password(body.password),
     )
     db.add(user)
@@ -70,7 +68,10 @@ async def register(body: UserRegisterRequest, db: AsyncSession = Depends(get_db)
 
 
 @router.post("/login", response_model=TokenResponse)
-async def login(body: UserLoginRequest, db: AsyncSession = Depends(get_db)):
+async def login(body: UserLoginRequest, request: Request, db: AsyncSession = Depends(get_db)):
+    client_ip = request.client.host if request.client else "unknown"
+    check_login_rate_limit(f"{client_ip}:{body.email}")
+
     result = await db.execute(select(User).where(User.email == body.email))
     user = result.scalar_one_or_none()
     if user is None or not verify_password(body.password, user.hashed_password):

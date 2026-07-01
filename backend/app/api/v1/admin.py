@@ -1,3 +1,4 @@
+import secrets
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -5,6 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import get_settings
 from app.core.auth import get_current_user
 from app.core.database import get_db
 from app.models.user import User
@@ -13,7 +15,7 @@ from app.models.voice_change_request import VoiceChangeRequest
 
 router = APIRouter()
 
-DEFAULT_ADMIN_PIN = "5252"
+settings = get_settings()
 
 
 class PinVerifyRequest(BaseModel):
@@ -49,8 +51,9 @@ class AdminActionRequest(BaseModel):
 async def verify_admin_pin(
     body: PinVerifyRequest,
 ):
-    # 기본 PIN으로 검증 (로그인 불필요)
-    valid = body.pin == DEFAULT_ADMIN_PIN
+    # ADMIN_PIN 환경변수와 대조. 미설정 시 항상 실패(fail-closed)
+    configured_pin = settings.ADMIN_PIN
+    valid = bool(configured_pin) and secrets.compare_digest(body.pin, configured_pin)
     return PinVerifyResponse(valid=valid, is_admin=valid)
 
 

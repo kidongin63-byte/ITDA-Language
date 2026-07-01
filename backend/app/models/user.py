@@ -17,7 +17,7 @@ class User(Base):
     nickname: Mapped[str] = mapped_column(String(100))  # 실명
     phone: Mapped[str | None] = mapped_column(String(20), unique=True, nullable=True, index=True)
     gender: Mapped[str | None] = mapped_column(String(10), nullable=True)  # "male" or "female"
-    birth_id: Mapped[str | None] = mapped_column(String(6), nullable=True)  # 주민번호 앞자리 (YYMMDD)
+    birth_id: Mapped[str | None] = mapped_column(String(255), nullable=True)  # 생년월일(YYMMDD) 암호화 저장 — app.core.crypto
     hashed_password: Mapped[str] = mapped_column(String(255))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)

@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
-from sqlalchemy import select
+from sqlalchemy import select, text
 
 from app.config import get_settings
 from app.api.v1 import admin, auth, tts, voices, phrases, websocket
@@ -64,6 +64,15 @@ async def lifespan(app: FastAPI):
     # Startup: 테이블 자동 생성
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        # 자가 마이그레이션: 기존 birth_id VARCHAR(6) → VARCHAR(255)
+        # (암호화 저장으로 암호문 길이가 늘어남. PostgreSQL만 대상, 반복 실행 안전)
+        if conn.dialect.name == "postgresql":
+            try:
+                await conn.execute(
+                    text("ALTER TABLE users ALTER COLUMN birth_id TYPE VARCHAR(255)")
+                )
+            except Exception:
+                pass
     # 음성 시드 데이터 삽입 (새 음성 추가 시 자동 반영)
     async with async_session() as session:
         from sqlalchemy import func
@@ -85,13 +94,18 @@ app = FastAPI(
     version=settings.APP_VERSION,
     description="소리로 이어주는 따뜻한 다리",
     lifespan=lifespan,
+    # 운영 환경에서는 API 문서(/docs, /redoc)를 노출하지 않음
+    docs_url=None if settings.is_production else "/docs",
+    redoc_url=None if settings.is_production else "/redoc",
+    openapi_url=None if settings.is_production else "/openapi.json",
 )
 
-# CORS
+# CORS: 운영은 지정된 도메인만 허용. Bearer 토큰 인증이라 쿠키 자격증명은 불필요
+_cors_origins = settings.cors_origin_list
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=_cors_origins,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
